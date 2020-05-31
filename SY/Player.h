@@ -9,11 +9,7 @@ using namespace std;
 class Player {
     
 public:
-    void Move (char trans);
-    //int getPos();
-    void decreaseTaxi();
-    void decreaseBus();
-    void decreaseUg();
+    void decreaseTicket (char trans);
     void setTaxi (int val);
     void setBus (int val);
     void setUg (int val);

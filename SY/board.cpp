@@ -177,6 +177,7 @@ bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents)
             if (map[curpos][dest][i]==trans && playerid==5) {
                 cout << "movable " << endl;
                 return true;
+                break;
             }
             else if ((agents[playerid].enoughTicket(trans) == true) || map[curpos][dest][i]==trans) return true;
         }

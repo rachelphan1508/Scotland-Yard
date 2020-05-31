@@ -1,10 +1,3 @@
-//
-//  Agent.cpp
-//  SY
-//
-//  Created by Rachel Phan on 5/27/20.
-//  Copyright © 2020 Rachel Phan. All rights reserved.
-//
 
 #include "Player.h"
 
@@ -21,16 +14,6 @@ void Player:: setTaxi(int val) {
     numTaxi = val;
 }
 
-void Player:: decreaseTaxi() {
-    numTaxi--;
-}
-void Player:: decreaseBus() {
-    numBus--;
-}
-void Player:: decreaseUg() {
-    numUg--;
-}
-
 int Player:: getUg() {
     return numUg;
 }
@@ -41,10 +24,11 @@ int Player:: getTaxi() {
     return numTaxi;
 }
 
-void Player:: Move(char trans) {
-    if (trans == 'U') decreaseUg();
-    else if (trans == 'B')  decreaseBus();
-    else if (trans == 'T') decreaseTaxi();
+//decrease the number of tickets when a ticket is used
+void Player:: decreaseTicket(char trans) {
+    if (trans == 'U') numUg--;
+    else if (trans == 'B') numBus--;
+    else if (trans == 'T') numTaxi--;
 }
 
 bool Player:: enoughTicket(char trans) {

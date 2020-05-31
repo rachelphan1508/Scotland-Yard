@@ -30,7 +30,7 @@ public:
     void setUp(); // give 
     void playRound(int& num_round); //each player takes turn to move - update the board
     void playFullGame();
-    void playerTurn(int playerid);
+    void playDetective(int playerid);
     
 };
 

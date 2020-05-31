@@ -65,25 +65,39 @@ void GameManager:: setUp() {
     
 }
 
-void GameManager:: playerTurn(int playerid) {
+void GameManager:: playDetective(int playerid) {
     int dest;
     char trans;
+    bool movable;
 
         cout << "It's Detective "<<  playerid << "'s turn. " << endl;
-        if (myBoard.possibleMoves(agents[playerid], playerid, agents).size()!=0) {
+        cout << "All your possible moves: " << endl;
+        vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
+        for (int i=0; i < v.size(); i++) {
+            cout << "Destination: " << v[i].getDest() << endl;
+            cout << "Transportation: " << v[i].getTrans() << endl;
+        }
+        if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
             cout << "Enter your kind of transportation (T,B,U)" << endl;
             cin >> trans;
             
-            //this loop may suck when a detective runs of of ticket
-            while (!(myBoard.movable(myBoard.getPos(playerid), dest, trans, agents)) || !(agents[playerid].enoughTicket(trans)) ) {
-                cout << "Detective " << playerid+1 << " just made an illegal move. Do your move again, sir." << endl;
+            movable = myBoard.movable(playerid, dest, trans, agents);
+            if (movable==true){
+                cout << "Detective " << playerid+1 << " just moved" << endl;
+                myBoard.setPos(playerid, dest);
+            }
+            
+            else while (movable == false) {
+                cout << "Detective " << playerid << " just made an illegal move. Do your move again, sir." << endl;
+                cout << "Enter your desired destination: " << endl;
                 cin >> dest;
+                cout << "Enter your kind of transportation (T,B,U)" << endl;
                 cin >> trans;
             }
             myBoard.setPos(playerid, dest);
-            agents[playerid].Move(trans);
+            agents[playerid].decreaseTicket(trans);
             
             //check if game over
             if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
@@ -98,10 +112,12 @@ void GameManager:: playerTurn(int playerid) {
     
 }
 
+//play each round
 void GameManager:: playRound(int& num_round) {
     
     int dest;
     char trans;
+    bool movable = false;
     //bool blackUsed = false;
 
     // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
@@ -112,30 +128,41 @@ void GameManager:: playRound(int& num_round) {
     // Mr X's turn
     cout << "It's Mr. X's turn. " << endl;
     //get the destination + means of transportation
-    if (myBoard.possibleMoves(MisterX, 5,agents).size()!=0) {
+    vector<Travel> v = myBoard.possibleMoves(MisterX, 5, agents);
+    if (v.size()==0) {
+        cout << "Mr.X can't move anywhere else." << endl;
+        gameOver = true;
+    }
+    else {
+        //print all possible moves
+
+        cout << "All your possible moves: " << endl;
+        for (int i=0; i < v.size(); i++) {
+            cout << "Destination: " << v[i].getDest() << endl;
+            cout << "Transportation: " << v[i].getTrans() << endl;
+        }
+        
         cout << "Enter your desired destination: " << endl;
         cin >> dest;
         cout << "Enter your kind of transportation (T,B,U,L)" << endl;
         cin >> trans;
         
-        //print all possible moves
-        vector<Travel> v = myBoard.possibleMoves(MisterX, 5, agents);
-        for (int i=0; i < v.size(); i++) {
-            cout << "Destination: " << v[i].getDest() << endl;
-            cout << "Transportation: " << v[i].getTrans() << endl;
+        movable = myBoard.movable(5, dest, trans, agents);
+        if (movable==true){
+            cout << "Mr.X just moved" << endl;
+            myBoard.setPos(5, dest);
         }
     
-        while ((myBoard.movable(myBoard.getPos(5), dest, trans,agents)) == false) {
+        else while ((myBoard.movable(5, dest, trans,agents)) == false) {
         cout << "Mr.X just made an illegal move. Do your move again, Mr. X." << endl;
         cout << "Enter your desired destination: " << endl;
         cin >> dest;
         cout << "Enter your kind of transportation (T,B,U,L)" << endl;
         cin >> trans;
-    }
-        cout << "Mr.X just moved" << endl;
-    myBoard.setPos(5, dest);
+        }
     
-    MisterX.Move(trans);
+    
+    MisterX.decreaseTicket(trans);
         if (trans == 'L' ) {
             cout << "Mr.X just used a Black ticket." << endl;
         }
@@ -148,11 +175,6 @@ void GameManager:: playRound(int& num_round) {
         else if (trans == 'U' ) {
             cout << "Mr.X just used an Underground ticket." << endl;
         }
-        
-    }
-    else {
-        cout << "Mr.X can't move anywhere else." << endl;
-        gameOver = true;
     }
     //have to save Mr. X's trans somewhere & hide it if Mr.X's using Black
 
