@@ -133,7 +133,162 @@ void board:: setUp() {
     map[32][19] = "T";
     map[32][33] = "T";
     map[32][44] = "T";
-    
+    map[32][45] = "T";
+    map[33][20] = "T";
+    map[33][21] = "T";
+    map[33][32] = "T";
+    map[33][46] = "T";
+    map[34][10] = "T";
+    map[34][22] = "TB";
+    map[34][47] = "T";
+    map[34][48] = "T";
+    map[34][46] = "B";
+    map[34][63] = "B";
+    map[35][22] = "T";
+    map[35][36] = "T";
+    map[35][48] = "T";
+    map[35][65] = "T";
+    map[36][35] = "T";
+    map[36][37] = "T";
+    map[36][49] = "T";
+    map[37][23] = "T";
+    map[37][24] = "T";
+    map[37][36] = "T";
+    map[37][50] = "T";
+    map[38][24] = "T";
+    map[38][25] = "T";
+    map[38][50] = "T";
+    map[38][51] = "T";
+    map[39][25] = "T";
+    map[39][26] = "T";
+    map[39][51] = "T";
+    map[39][52] = "T";
+    map[40][27] = "T";
+    map[40][41] = "T";
+    map[40][52] = "T";
+    map[40][53] = "T";
+    map[41][28] = "T";
+    map[41][29] = "TB";
+    map[41][40] = "T";
+    map[41][54] = "T";
+    map[41][15] = "B";
+    map[41][52] = "B";
+    map[41][87] = "B";
+    map[42][29] = "TB";
+    map[42][30] = "T";
+    map[42][56] = "T";
+    map[42][72] = "TB";
+    map[42][7] = "B";
+    map[42][7] = "B";
+    map[43][18] = "T";
+    map[43][31] = "T";
+    map[43][57] = "T";
+    map[44][31] = "T";
+    map[44][32] = "T";
+    map[44][58] = "T";
+    map[45][32] = "T";
+    map[45][46] = "T";
+    map[45][58] = "T";
+    map[45][59] = "T";
+    map[45][60] = "T";
+    map[46][33] = "T";
+    map[46][45] = "T";
+    map[46][47] = "T";
+    map[46][61] = "T";
+    map[46][1] = "BU";
+    map[46][34] = "B";
+    map[46][58] = "B";
+    map[46][78] = "B";
+    map[46][13] = "U";
+    map[46][74] = "U";
+    map[46][79] = "U";
+    map[47][34] = "T";
+    map[47][46] = "T";
+    map[47][62] = "T";
+    map[48][34] = "T";
+    map[48][35] = "T";
+    map[48][62] = "T";
+    map[48][63] = "T";
+    map[49][36] = "T";
+    map[49][50] = "T";
+    map[49][66] = "T";
+    map[50][37] = "T";
+    map[50][38] = "T";
+    map[50][49] = "T";
+    map[51][38] = "T";
+    map[51][39] = "T";
+    map[51][52] = "T";
+    map[51][52] = "T";
+    map[51][67] = "T";
+    map[51][68] = "T";
+    map[52][39] = "T";
+    map[52][40] = "T";
+    map[52][51] = "T";
+    map[52][69] = "T";
+    map[52][13] = "B";
+    map[52][41] = "B";
+    map[52][67] = "B";
+    map[52][86] = "B";
+    map[53][40] = "T";
+    map[53][54] = "T";
+    map[53][69] = "T";
+    map[54][41] = "T";
+    map[54][53] = "T";
+    map[54][55] = "T";
+    map[54][70] = "T";
+    map[55][54] = "T";
+    map[55][71] = "T";
+    map[55][29] = "B";
+    map[55][89] = "B";
+    map[56][42] = "T";
+    map[56][91] = "T";
+    map[57][43] = "T";
+    map[57][59] = "T";
+    map[57][73] = "T";
+    map[58][44] = "T";
+    map[58][45] = "T";
+    map[58][57] = "T";
+    map[58][59] = "T";
+    map[58][74] = "T";
+    map[58][75] = "T";
+    map[58][1] = "B";
+    map[58][46] = "B";
+    map[58][74] = "B";
+    map[58][77] = "B";
+    map[59][45] = "T";
+    map[59][58] = "T";
+    map[59][75] = "T";
+    map[59][76] = "T";
+    map[60][45] = "T";
+    map[60][61] = "T";
+    map[60][76] = "T";
+    map[61][46] = "T";
+    map[61][60] = "T";
+    map[61][62] = "T";
+    map[61][76] = "T";
+    map[61][78] = "T";
+    map[62][47] = "T";
+    map[62][48] = "T";
+    map[62][61] = "T";
+    map[62][79] = "T";
+    map[63][48] = "T";
+    map[63][64] = "T";
+    map[63][79] = "TB";
+    map[63][80] = "T";
+    map[63][34] = "B";
+    map[63][65] = "B";
+    map[63][100] = "B";
+    map[64][63] = "T";
+    map[64][65] = "T";
+    map[64][81] = "T";
+    map[65][66] = "T";
+    map[65][82] = "T";
+    map[65][22] = "B";
+    map[65][63] = "B";
+    map[65][67] = "B";
+    map[65][82] = "B";
+    map[66][49] = "T";
+
 }
 
 vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Player>& agents) {
@@ -160,26 +315,43 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
     return res;
 }
 
+//get a player's position
 int board:: getPos(int playerid) {
     return positions[playerid];
 }
 
+//set a player's position
 void board:: setPos(int playerid, int pos) {
     positions[playerid] = pos;
 }
 
+//check if the destination a player plan to be at is still available
+bool board:: destOccupied(int dest) {
+    for (int i =0; i<positions.size(); i++) {
+        if (dest == positions[i]) return true;
+    }
+    return false;
+}
+//check if the move is legal
 bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents) {
     int curpos = positions[playerid];
-    cout << "current pos " << curpos << endl;
+    //cout << "current pos " << curpos << endl;
+    //if there is no available kind of transportation -> return false
     if (map[curpos][dest]=="") return false;
+    else if (playerid!=5 && destOccupied(dest)==true) {
+        cout << "Your desired location is occupied by another detective. " << endl;
+        return false;
+    }
     else {
         for (int i=0; i< map[curpos][dest].size(); i++) {
-            if (map[curpos][dest][i]==trans && playerid==5) {
-                cout << "movable " << endl;
+            //for Mr. X
+            if ( (map[curpos][dest][i]==trans || trans == 'L') && playerid==5) {
+                //cout << "movable " << endl;
                 return true;
                 break;
             }
-            else if ((agents[playerid].enoughTicket(trans) == true) || map[curpos][dest][i]==trans) return true;
+            //for other players
+            else if ((agents[playerid].enoughTicket(trans) == true) && map[curpos][dest][i]==trans) return true;
         }
     }
     return false;

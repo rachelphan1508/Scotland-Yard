@@ -26,6 +26,7 @@ public:
     void setPos(int playerid, int pos);
     
     int getPos(int playerid);
+    bool destOccupied(int dest);
 
 private:
     vector<vector<string>> map;

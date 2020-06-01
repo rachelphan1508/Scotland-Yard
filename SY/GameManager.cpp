@@ -5,13 +5,14 @@ GameManager:: GameManager() {
     
 }
 
+//this function sets up the game
 void GameManager:: setUp() {
     
     //set up the board
     myBoard.setUp();
     gameOver = false;
     //srand(time(0));
-    //give each person a starting position
+    //give each person a random starting position (using 20 because the board is not yet finished)
     int v0 = rand() % 20 + 1;
     int v1 = rand() % 20 + 1;
     while (v1==v0) {
@@ -65,12 +66,13 @@ void GameManager:: setUp() {
     
 }
 
+// do the move for each detective
 void GameManager:: playDetective(int playerid) {
     int dest;
     char trans;
     bool movable;
 
-        cout << "It's Detective "<<  playerid << "'s turn. " << endl;
+        cout << "It's Detective "<<  playerid+1 << "'s turn. " << endl;
         cout << "All your possible moves: " << endl;
         vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
         for (int i=0; i < v.size(); i++) {
@@ -95,6 +97,7 @@ void GameManager:: playDetective(int playerid) {
                 cin >> dest;
                 cout << "Enter your kind of transportation (T,B,U)" << endl;
                 cin >> trans;
+                movable = myBoard.movable(playerid, dest, trans, agents);
             }
             myBoard.setPos(playerid, dest);
             agents[playerid].decreaseTicket(trans);
@@ -189,7 +192,7 @@ void GameManager:: playRound(int& num_round) {
     int cur_player = 0;
     bool roundOver = false;
     while (!gameOver || !roundOver) {
-        playerTurn(cur_player);
+        playDetective(cur_player);
         if (cur_player==4) { // done with all detectives
             roundOver = true;
         }
@@ -199,6 +202,7 @@ void GameManager:: playRound(int& num_round) {
     
 }
 
+//play the complete game
 void GameManager:: playFullGame() {
     int cur_round =1;
     while (cur_round!= 25 || gameOver== false) {
