@@ -11,7 +11,7 @@ void GameManager:: setUp() {
     //set up the board
     myBoard.setUp();
     gameOver = false;
-    //srand(time(0));
+    srand(time(0));
     //give each person a random starting position (using 20 because the board is not yet finished)
     int v0 = rand() % 20 + 1;
     int v1 = rand() % 20 + 1;
@@ -61,6 +61,8 @@ void GameManager:: setUp() {
         agents[i].setTaxi(10);
         agents[i].setBus(8);
         agents[i].setUg(4);
+        agents[i].setDouble(0);
+        agents[i].setBlack(0);
         cout << "Detective " << i+1 << " is at " << myBoard.getPos(i) << endl;
     }
     
@@ -72,9 +74,11 @@ void GameManager:: playDetective(int playerid) {
     char trans;
     bool movable;
 
-        cout << "It's Detective "<<  playerid+1 << "'s turn. " << endl;
+        cout << endl << "It's Detective "<<  playerid+1 << "'s turn. " << endl;
+        cout << "Detective " << playerid+1 << " is currently at " << myBoard.getPos(playerid) << endl;
         cout << "All your possible moves: " << endl;
         vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
+        //cout << "here" << endl;
         for (int i=0; i < v.size(); i++) {
             cout << "Destination: " << v[i].getDest() << endl;
             cout << "Transportation: " << v[i].getTrans() << endl;
@@ -109,7 +113,7 @@ void GameManager:: playDetective(int playerid) {
             }
         }
         else {
-            cout << "Detective " << playerid << "can't move anywhere." << endl;
+            cout << "Detective " << playerid+1 << "can't move anywhere." << endl;
         }
     
     
@@ -129,7 +133,7 @@ void GameManager:: playRound(int& num_round) {
     cout << "We are currently at round " << num_round << endl;
     
     // Mr X's turn
-    cout << "It's Mr. X's turn. " << endl;
+    cout << endl << "It's Mr. X's turn. " << endl;
     //get the destination + means of transportation
     vector<Travel> v = myBoard.possibleMoves(MisterX, 5, agents);
     if (v.size()==0) {
@@ -144,6 +148,7 @@ void GameManager:: playRound(int& num_round) {
             cout << "Destination: " << v[i].getDest() << endl;
             cout << "Transportation: " << v[i].getTrans() << endl;
         }
+        //ask if Mr.X wants to use a Double ticket
         
         cout << "Enter your desired destination: " << endl;
         cin >> dest;
@@ -162,6 +167,7 @@ void GameManager:: playRound(int& num_round) {
         cin >> dest;
         cout << "Enter your kind of transportation (T,B,U,L)" << endl;
         cin >> trans;
+        movable = myBoard.movable(5, dest, trans, agents);
         }
     
     
@@ -179,7 +185,6 @@ void GameManager:: playRound(int& num_round) {
             cout << "Mr.X just used an Underground ticket." << endl;
         }
     }
-    //have to save Mr. X's trans somewhere & hide it if Mr.X's using Black
 
 
     //reveal Mr.X's location if in round 3-8-13-18-24
@@ -189,15 +194,11 @@ void GameManager:: playRound(int& num_round) {
     //have to change the cur_round number if Mr.X used a double!
     
     //detectives' turn
-    int cur_player = 0;
-    bool roundOver = false;
-    while (!gameOver || !roundOver) {
-        playDetective(cur_player);
-        if (cur_player==4) { // done with all detectives
-            roundOver = true;
-        }
-        cur_player++;
-        
+    //int cur_player = 0;
+    //bool roundOver = false;
+    for (int i=0; i<5; i++) {
+        playDetective(i);
+        if (gameOver==true) break;
     }
     
 }
@@ -208,6 +209,7 @@ void GameManager:: playFullGame() {
     while (cur_round!= 25 || gameOver== false) {
         playRound(cur_round);
         cur_round++;
+        if (gameOver==true) break;
     }
     if (cur_round==25) {
         cout << "Mr.X won the game!" << endl;

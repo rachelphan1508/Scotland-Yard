@@ -14,6 +14,18 @@ void Player:: setTaxi(int val) {
     numTaxi = val;
 }
 
+
+void Player:: setBlack(int val) {
+    numBlack = val;
+}
+
+void Player:: setDouble(int val) {
+    numDouble = val;
+}
+
+
+
+
 int Player:: getUg() {
     return numUg;
 }
@@ -25,11 +37,11 @@ int Player:: getTaxi() {
 }
 
 //decrease the number of tickets when a ticket is used
-// (!) need to add - decrease Black Tickets  & Boat Tickets
 void Player:: decreaseTicket(char trans) {
     if (trans == 'U') numUg--;
     else if (trans == 'B') numBus--;
     else if (trans == 'T') numTaxi--;
+    else if (trans == 'L') numBlack--;
 }
 
 

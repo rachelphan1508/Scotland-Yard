@@ -3,7 +3,7 @@
 
 using namespace std;
 
-
+//initialize the board
 void board:: setUp() {
     // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
     // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
@@ -13,9 +13,9 @@ void board:: setUp() {
         map[i].resize(199);
     }
     
-    //set up with a map of " "
-    for (int i=0; i<199; i++) {
-        for (int j=0; j<199; j++) {
+    //set up with a map of empty string
+    for (int i=0; i<200; i++) {
+        for (int j=0; j<200; j++) {
             map[i][j] = "";
         }
     }
@@ -311,7 +311,7 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
             }
         }
     }
-    cout << "size " << res.size() << endl;
+    //cout << "size " << res.size() << endl;
     return res;
 }
 
@@ -327,7 +327,7 @@ void board:: setPos(int playerid, int pos) {
 
 //check if the destination a player plan to be at is still available
 bool board:: destOccupied(int dest) {
-    for (int i =0; i<positions.size(); i++) {
+    for (int i =0; i<positions.size()-1; i++) {
         if (dest == positions[i]) return true;
     }
     return false;
@@ -339,7 +339,7 @@ bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents)
     //if there is no available kind of transportation -> return false
     if (map[curpos][dest]=="") return false;
     else if (playerid!=5 && destOccupied(dest)==true) {
-        cout << "Your desired location is occupied by another detective. " << endl;
+        //cout << "Your desired location is occupied by another detective. " << endl;
         return false;
     }
     else {

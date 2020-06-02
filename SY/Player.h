@@ -13,6 +13,8 @@ public:
     void setTaxi (int val);
     void setBus (int val);
     void setUg (int val);
+    void setDouble (int val);
+    void setBlack (int val);
     int getUg();
     int getTaxi();
     int getBus();
@@ -23,6 +25,8 @@ private:
     int numTaxi;
     int numBus;
     int numUg;
+    int numBlack;
+    int numDouble;
 };
 
 #endif /* Player_h */
