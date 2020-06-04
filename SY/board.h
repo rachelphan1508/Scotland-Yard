@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Detective.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -27,10 +28,12 @@ public:
     
     int getPos(int playerid);
     bool destOccupied(int dest);
+    string getPlayerName(int playerid);
 
 private:
     vector<vector<string>> map;
     vector<int> positions; //detective 0: 0 -  detective 1: 1 - ... - mr X: 5
+    vector<string> playernames;
     
 };
 

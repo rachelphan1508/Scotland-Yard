@@ -35,6 +35,12 @@ int Player:: getBus() {
 int Player:: getTaxi() {
     return numTaxi;
 }
+int Player:: getDouble() {
+    return numDouble;
+}
+int Player:: getBlack() {
+    return numBlack;
+}
 
 //decrease the number of tickets when a ticket is used
 void Player:: decreaseTicket(char trans) {
@@ -42,6 +48,8 @@ void Player:: decreaseTicket(char trans) {
     else if (trans == 'B') numBus--;
     else if (trans == 'T') numTaxi--;
     else if (trans == 'L') numBlack--;
+    else if (trans == 'D') numDouble--;
+    
 }
 
 
@@ -52,5 +60,6 @@ bool Player:: enoughTicket(char trans) {
     }
     else if (trans == 'B' && getBus() == 0) return false;
     else if (trans == 'T' && getTaxi() == 0) return false;
+    else if (trans == 'D' && getDouble()== 0) return false;
     else return true;
 }

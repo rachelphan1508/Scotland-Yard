@@ -18,6 +18,8 @@ public:
     int getUg();
     int getTaxi();
     int getBus();
+    int getDouble();
+    int getBlack();
     bool enoughTicket (char trans);
     
     
