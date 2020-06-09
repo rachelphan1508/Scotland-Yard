@@ -13,27 +13,27 @@ void GameManager:: setUp() {
     gameOver = false;
     srand(time(0));
     //give each person a random starting position (using 20 because the board is not yet finished)
-    int v0 = rand() % 20 + 1;
-    int v1 = rand() % 20 + 1;
+    int v0 = rand() % 200 + 1;
+    int v1 = rand() % 200 + 1;
     while (v1==v0) {
-        v1 = rand() % 20 + 1;
+        v1 = rand() % 200 + 1;
     }
-    int v2 = rand() % 20 + 1;
+    int v2 = rand() % 200 + 1;
     while (v2==v1 || v2==v0) {
-        v2 = rand() % 20 + 1;
+        v2 = rand() % 200 + 1;
     }
-    int v3 = rand() % 20 + 1;
+    int v3 = rand() % 200 + 1;
     while (v3==v2 || v3==v1 || v3==v0) {
-        v3 = rand() % 20 + 1;
+        v3 = rand() % 200 + 1;
     }
-    int v4 = rand() % 20 + 1;
-    while (v4==v3 || v3==v2 || v2==v1 || v1==v0) {
-        v4 = rand() % 20 + 1;
+    int v4 = rand() % 200 + 1;
+    while (v4==v3 || v4==v2 || v4==v1 || v4==v0) {
+        v4 = rand() % 200 + 1;
     }
     
-    int v5 = rand() % 20 + 1;
+    int v5 = rand() % 200 + 1;
     while (v5==v4 || v5==v3 || v5==v2 || v5==v1 || v5==v0) {
-        v5 = rand() % 20 + 1;
+        v5 = rand() % 200 + 1;
     }
     
     myBoard.setPos(5, v0);

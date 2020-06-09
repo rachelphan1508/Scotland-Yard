@@ -20,7 +20,7 @@ void board:: setUp() {
     map.resize(200);
     positions.resize(6);
     for (int i=0; i< map.size();i++) {
-        map[i].resize(199);
+        map[i].resize(200);
     }
     
     //set up with a map of empty string
@@ -71,6 +71,7 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
     //cout << "size " << res.size() << endl;
     return res;
 }
+
 
 //get a player's position
 int board:: getPos(int playerid) {
