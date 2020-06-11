@@ -31,6 +31,7 @@ public:
     void playRound(int& num_round); //each player takes turn to move - update the board
     void playFullGame();
     void playDetective(int playerid);
+    void playMrX(char doubleticket);
     
 };
 

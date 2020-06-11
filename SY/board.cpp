@@ -119,6 +119,8 @@ string board:: getPlayerName(int playerid) {
 }
 
 string board:: at(int row, int col) {
+    //cout << "map size" << map.size() << endl;
+    //cout << "row " << row << " col " << col << endl;
     return map[row][col];
 }
 

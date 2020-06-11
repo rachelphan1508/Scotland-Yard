@@ -74,7 +74,11 @@ void GameManager:: playDetective(int playerid) {
     char trans;
     bool movable;
 
-        cout << endl << "It's Detective "<<  myBoard.getPlayerName(playerid) << "'s turn. " << endl;
+    cout << endl << "It's Detective "<<  myBoard.getPlayerName(playerid) << "'s turn. " << endl;
+    
+    agents[playerid].Display();
+    
+    
         cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
     
         //print all kind of transportations
@@ -124,21 +128,14 @@ void GameManager:: playDetective(int playerid) {
     
 }
 
-//play each round
-void GameManager:: playRound(int& num_round) {
+void GameManager:: playMrX(char doubleticket) {
+
     
     int dest;
     char trans;
     bool movable = false;
-    char doubleticket;
+    
 
-    // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
-    // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
-    
-    cout << "We are currently at round " << num_round << endl;
-    
-    // Mr X's turn
-    cout << endl << "It's Mr. X's turn. " << endl;
     //get the destination + means of transportation
     vector<Travel> v = myBoard.possibleMoves(MisterX, 5, agents);
     if (v.size()==0) {
@@ -152,30 +149,26 @@ void GameManager:: playRound(int& num_round) {
         cout << MisterX.getDouble() << " Double tickets." << endl;
         
         //print all possible moves
-
+        
         cout << "All your possible moves: " << endl;
         for (int i=0; i < v.size(); i++) {
             cout << "Destination: " << v[i].getDest() << endl;
             cout << "Transportation: " << v[i].getTrans() << endl;
         }
-        //ask if Mr.X wants to use a Double ticket
-        cout << "Mr.X, do you want to use a Double ticket? (y/n)" << endl;
-        cin >> doubleticket;
-        //if Mr. X doesn't use a Double ticket
-        if (MisterX.enoughTicket('D')==false && doubleticket=='y') cout << "Sorry Mr.X, you don't have enough Double tickets to use." << endl;
-        if (doubleticket != 'y' || MisterX.enoughTicket('D')==false) {
+
         
+        //if Mr. X doesn't use a Double ticket
+        //if (MisterX.enoughTicket('D')==false && doubleticket=='y') cout << "Sorry Mr.X, you don't have enough Double tickets to use." << endl;
+        //if (doubleticket != 'y' || MisterX.enoughTicket('D')==false) {
+            
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
             cout << "Enter your kind of transportation (T,B,U,L)" << endl;
             cin >> trans;
-        
+            
             movable = myBoard.movable(5, dest, trans, agents);
-            if (movable==true){
-                cout << "Mr.X just moved" << endl;
-            }
-    
-            else while ((myBoard.movable(5, dest, trans,agents)) == false) {
+            
+            while ((myBoard.movable(5, dest, trans,agents)) == false) {
                 cout << "Mr.X just made an illegal move. Do your move again, Mr. X." << endl;
                 cout << "Enter your desired destination: " << endl;
                 cin >> dest;
@@ -198,79 +191,82 @@ void GameManager:: playRound(int& num_round) {
                 cout << "Mr.X just used an Underground ticket." << endl;
             }
             
+        for(int i=0;i <agents.size();i++) {
+                agents[i].updateMrX(trans, myBoard);
+                //cout << "here I updated Mr.X's trans" << endl;
+                
+            }
+            
             //check if Mr.X's destination is one of the detectives' current location
             if (myBoard.destOccupied(dest)==true) {
                 gameOver = true;
                 cout << "Mr.X, you just moved to one of the detectives' location. GAME OVER!" << endl;
             }
-            
 
-        
+    
+}
+}
+
+//play each round
+void GameManager:: playRound(int& num_round) {
+    
+    agents[0].Display();
 
 
-            //reveal Mr.X's location if in round 3-8-13-18-24
-            if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
-                cout << "Mr. X is now at " << myBoard.getPos(5) << endl;
-                //here, save Mr.X current location
+    char doubleticket;
+    // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
+    // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
+    
+    cout << endl <<  "We are currently at round " << num_round << endl;
+
+    // Mr X's turn
+    cout << endl << "It's Mr. X's turn. " << endl;
+    //ask if Mr.X wants to use a Double ticket
+    if(MisterX.enoughTicket('D')==true) {
+    cout << "Mr.X, do you want to use a Double ticket? (Y/N)" << endl;
+    cin >> doubleticket;
+    }
+    if (doubleticket=='Y' && MisterX.enoughTicket('D')==true) {
+        MisterX.decreaseTicket('D');
+        playMrX('Y');
+        if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
+            //update Mr.X's last seen
+            for(int i=0; i<agents.size();i++) {
+                agents[i].updatelastseen(myBoard.getPos(5), myBoard);
+                //cout << "here I update last seen... " << endl;
+                agents[i].Display();
+                
             }
-            //detectives' turn
-            if (gameOver!=true) {
+            cout << "Mr. X is now at " << myBoard.getPos(5) << endl;
+            //here, save Mr.X current location
+        }
+        //reveal Mr.X's location if in round 3-8-13-18-24
+
+    }
+    
+    else {
+        playMrX('N');
+        if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
+            //update Mr.X's last seen
+            for(int i=0; i<agents.size();i++) {
+                agents[i].updatelastseen(myBoard.getPos(5), myBoard);
+                cout << "here I update last seen... " << endl;
+                agents[i].Display();
+                
+            }
+            cout << "Mr. X is now at " << myBoard.getPos(5) << endl;
+            //here, save Mr.X current location
+        }
+        //detectives' turn
+        if (gameOver!=true) {
             for (int i=0; i<5; i++) {
                 playDetective(i);
                 if (gameOver==true) break;
             }
-            }
-    }
+        }
     
 
-    //else if Mr. X used a Double ticket, only Mr.X plays in this round
-    
-    else {
-        cout << "Mr. X just used a Double ticket." << endl;
-        MisterX.decreaseTicket('D');
-        cout << "Enter your desired destination: " << endl;
-        cin >> dest;
-        cout << "Enter your kind of transportation (T,B,U,L)" << endl;
-        cin >> trans;
-        
-        movable = myBoard.movable(5, dest, trans, agents);
-        if (movable==true){
-            cout << "Mr.X just moved" << endl;
-            myBoard.setPos(5, dest);
-        }
-        
-        else while ((myBoard.movable(5, dest, trans,agents)) == false) {
-            cout << "Mr.X just made an illegal move. Do your move again, Mr. X." << endl;
-            cout << "Enter your desired destination: " << endl;
-            cin >> dest;
-            cout << "Enter your kind of transportation (T,B,U,L)" << endl;
-            cin >> trans;
-            movable = myBoard.movable(5, dest, trans, agents);
-        }
-        
-        
-        MisterX.decreaseTicket(trans);
-        if (trans == 'L' ) {
-            cout << "Mr.X just used a Black ticket." << endl;
-        }
-        else if (trans == 'T' ) {
-            cout << "Mr.X just used a Taxi." << endl;
-        }
-        else if (trans == 'B' ) {
-            cout << "Mr.X just used a Bus." << endl;
-        }
-        else if (trans == 'U' ) {
-            cout << "Mr.X just used an Underground ticket." << endl;
-        }
-        
-        //check if Mr.X's destination is one of the detectives' current location
-        if (myBoard.destOccupied(dest)==true) {
-            gameOver = true;
-            cout << "Mr.X, you just moved to one of the detectives' location. GAME OVER!" << endl;
-        }
-        
     }
-}
     
 }
 

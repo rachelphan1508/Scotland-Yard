@@ -14,6 +14,7 @@ class board;
 class Player {
     
 public:
+    Player();
     void decreaseTicket (char trans);
     void setTaxi (int val);
     void setBus (int val);
@@ -29,8 +30,10 @@ public:
     bool enoughTicket (char trans);
     
     vector<int> getMrXloc();
-    void updateMrX(char trans, board* myboard);
-    void updatelastseen(int pos, board* myboard);
+    void updateMrX(char trans, board& myboard);
+    void updatelastseen(int pos, board& myboard);
+    
+    void Display();
     
     
 private:
