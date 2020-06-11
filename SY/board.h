@@ -21,14 +21,12 @@ public:
     
     vector <Travel> possibleMoves (Player myplayer, int playerid, vector<Player>& agents);
     
-    //takes a position returns all the places you can go to and transportation
-    // --- Travel class contains both char for type of transportation ---- => return a vector of Travel
-    
     void setPos(int playerid, int pos);
     
     int getPos(int playerid);
     bool destOccupied(int dest);
     string getPlayerName(int playerid);
+    
 
 private:
     vector<vector<string>> map;
@@ -37,4 +35,4 @@ private:
     
 };
 
-#endif 
+#endif

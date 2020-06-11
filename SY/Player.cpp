@@ -63,3 +63,40 @@ bool Player:: enoughTicket(char trans) {
     else if (trans == 'D' && getDouble()== 0) return false;
     else return true;
 }
+
+vector<int> Player:: getMrXloc() {
+    return mrXlocation;
+    
+}
+
+void Player:: updateMrX(char trans, board* myboard) {
+    //for every of mr X's possible location, update it with the next possible location he can be at with the ticket he just used
+    vector<int> newpos;
+    for (int i=0; i<mrXlocation.size();i++) {
+        //go through the board
+        for (int j=0; j<200; j++) {
+            string at = myboard->at(i,j);
+            
+            if (at!="") {
+                if (trans == 'L') newpos.push_back(j);
+                else for (char c : at) {
+                    if (c == trans) {
+                        newpos.push_back(j);
+                    }
+                }
+            }
+        }
+    }
+    //delete all duplicates
+    
+    //replace the previous mrX
+    
+    
+}
+
+void Player:: updatelastseen(int pos, board* myboard) {
+    lastseen = pos;
+    //here, update all Mr.X's possible locations
+    mrXlocation.resize(1);
+    mrXlocation[0] = pos;
+}

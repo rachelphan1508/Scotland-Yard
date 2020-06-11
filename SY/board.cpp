@@ -68,7 +68,6 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
             }
         }
     }
-    //cout << "size " << res.size() << endl;
     return res;
 }
 
@@ -117,5 +116,9 @@ bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents)
 
 string board:: getPlayerName(int playerid) {
     return playernames[playerid];
+}
+
+string board:: at(int row, int col) {
+    return map[row][col];
 }
 

@@ -4,7 +4,12 @@
 
 #include <stdio.h>
 #include <string>
+#include "Travel.h"
+#include <vector>
+
 using namespace std;
+
+class board;
 
 class Player {
     
@@ -20,7 +25,12 @@ public:
     int getBus();
     int getDouble();
     int getBlack();
+    
     bool enoughTicket (char trans);
+    
+    vector<int> getMrXloc();
+    void updateMrX(char trans, board* myboard);
+    void updatelastseen(int pos, board* myboard);
     
     
 private:
@@ -29,6 +39,9 @@ private:
     int numUg;
     int numBlack;
     int numDouble;
+    vector<int> mrXlocation;
+    int lastseen;
+    
 };
 
 #endif /* Player_h */

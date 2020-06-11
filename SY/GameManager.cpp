@@ -211,6 +211,7 @@ void GameManager:: playRound(int& num_round) {
             //reveal Mr.X's location if in round 3-8-13-18-24
             if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
                 cout << "Mr. X is now at " << myBoard.getPos(5) << endl;
+                //here, save Mr.X current location
             }
             //detectives' turn
             if (gameOver!=true) {
