@@ -32,6 +32,7 @@ public:
     vector<int> getMrXloc();
     void updateMrX(char trans, board& myboard);
     void updatelastseen(int pos, board& myboard);
+    void updateFromDetective (board& myboard, int playerid);
     
     void Display();
     

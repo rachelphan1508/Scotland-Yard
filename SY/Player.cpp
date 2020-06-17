@@ -74,6 +74,17 @@ vector<int> Player:: getMrXloc() {
     
 }
 
+//update the vector of Mr.X's locations whenever a detective makes a move
+void Player:: updateFromDetective (board& myboard, int playerid) {
+    int pos = myboard.getPos(playerid);
+    for (int i=0; i< mrXlocation.size(); i++) {
+        if (mrXlocation[i] == pos) {
+            mrXlocation.erase(mrXlocation.begin()+i);
+            break;
+        }
+    }
+}
+
 void Player:: updateMrX(char trans, board& myboard) {
     //for every of mr X's possible location, update it with the next possible location he can be at with the ticket he just used
     //cout << "trans: " << trans << endl;

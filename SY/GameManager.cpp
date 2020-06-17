@@ -79,21 +79,21 @@ void GameManager:: playDetective(int playerid) {
     agents[playerid].Display();
     
     
-        cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
+    cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
     
-        //print all kind of transportations
-        cout << "Detective " << myBoard.getPlayerName(playerid)  << " has: " << endl;
-        cout << agents[playerid].getBus() << " bus tickets." << endl;
-        cout << agents[playerid].getUg() << " underground tickets." << endl;
-        cout << agents[playerid].getTaxi() << " taxi tickets." << endl;
-        cout << "All your possible moves: " << endl;
-        vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
-        //cout << "here" << endl;
-        for (int i=0; i < v.size(); i++) {
-            cout << "Destination: " << v[i].getDest() << endl;
-            cout << "Transportation: " << v[i].getTrans() << endl;
-        }
-        if (v.size()!=0) {
+    //print all kind of transportations
+    cout << "Detective " << myBoard.getPlayerName(playerid)  << " has: " << endl;
+    cout << agents[playerid].getBus() << " bus tickets." << endl;
+    cout << agents[playerid].getUg() << " underground tickets." << endl;
+    cout << agents[playerid].getTaxi() << " taxi tickets." << endl;
+    cout << "All your possible moves: " << endl;
+    vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
+    //cout << "here" << endl;
+    for (int i=0; i < v.size(); i++) {
+        cout << "Destination: " << v[i].getDest() << endl;
+        cout << "Transportation: " << v[i].getTrans() << endl;
+    }
+    if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
             cout << "Enter your kind of transportation (T,B,U)" << endl;
@@ -114,16 +114,20 @@ void GameManager:: playDetective(int playerid) {
             }
             myBoard.setPos(playerid, dest);
             agents[playerid].decreaseTicket(trans);
+        
+        for (int i=0; i< agents.size();i++) {
+            agents[i].updateFromDetective(myBoard, playerid);
+        }
             
             //check if game over
             if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
                 cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
                 gameOver = true;
             }
-        }
-        else {
+    }
+    else {
             cout << "Detective " << myBoard.getPlayerName(playerid) << "can't move anywhere." << endl;
-        }
+    }
     
     
 }
@@ -195,7 +199,7 @@ void GameManager:: playMrX(char doubleticket) {
                 agents[i].updateMrX(trans, myBoard);
                 //cout << "here I updated Mr.X's trans" << endl;
                 
-            }
+        }
             
             //check if Mr.X's destination is one of the detectives' current location
             if (myBoard.destOccupied(dest)==true) {

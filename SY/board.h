@@ -27,6 +27,10 @@ public:
     bool destOccupied(int dest);
     string getPlayerName(int playerid);
     
+    int getDistance (int orig, int dest);
+    
+    //vector<int> getAllDest(
+    
 
 private:
     vector<vector<string>> map;
