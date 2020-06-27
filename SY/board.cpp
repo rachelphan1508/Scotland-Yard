@@ -57,8 +57,6 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
     //get all possible moves from that location
     for (int i=0; i<199; i++) {
         if (map[curpos][i].size() >= 1) {
-            //cout << ">=1" << endl;
-            // there is more than one kind of transportation
             move.setDest(i);
             for (int j=0; j< map[curpos][i].size(); j++) {
                 if (movable(playerid, i, map[curpos][i][j], agents)) {
@@ -92,7 +90,6 @@ bool board:: destOccupied(int dest) {
 //check if the move is legal
 bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents) {
     int curpos = positions[playerid];
-    //cout << "current pos " << curpos << endl;
     //if there is no available kind of transportation -> return false
     if (map[curpos][dest]=="") return false;
     else if (playerid!=5 && destOccupied(dest)==true) {

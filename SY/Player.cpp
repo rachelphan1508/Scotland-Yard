@@ -66,6 +66,7 @@ bool Player:: enoughTicket(char trans) {
     else if (trans == 'B' && getBus() == 0) return false;
     else if (trans == 'T' && getTaxi() == 0) return false;
     else if (trans == 'D' && getDouble()== 0) return false;
+    else if (trans == 'L' && getBlack()==0) return false;
     else return true;
 }
 

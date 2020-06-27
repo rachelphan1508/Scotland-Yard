@@ -9,6 +9,7 @@
 #include "board.h"
 #include <cstdlib>
 #include "Player.h"
+#include "Planner.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ protected:
     MrX MisterX;
     board myBoard;
     bool gameOver;
+    Planner D;
     
 private:
     int cur_round;

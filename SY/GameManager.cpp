@@ -77,8 +77,6 @@ void GameManager:: playDetective(int playerid) {
     cout << endl << "It's Detective "<<  myBoard.getPlayerName(playerid) << "'s turn. " << endl;
     
     agents[playerid].Display();
-    
-    
     cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
     
     //print all kind of transportations
@@ -93,6 +91,12 @@ void GameManager:: playDetective(int playerid) {
         cout << "Destination: " << v[i].getDest() << endl;
         cout << "Transportation: " << v[i].getTrans() << endl;
     }
+    
+    //here, replace by playing using the bot
+    
+    cout << "right before bot" << endl;
+    D.moveDetectives(agents, myBoard, playerid);
+    /*
     if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
@@ -128,6 +132,7 @@ void GameManager:: playDetective(int playerid) {
     else {
             cout << "Detective " << myBoard.getPlayerName(playerid) << "can't move anywhere." << endl;
     }
+    */
     
     
 }
@@ -254,7 +259,7 @@ void GameManager:: playRound(int& num_round) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
                 agents[i].updatelastseen(myBoard.getPos(5), myBoard);
-                cout << "here I update last seen... " << endl;
+                //cout << "here I update last seen... " << endl;
                 agents[i].Display();
                 
             }

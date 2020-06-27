@@ -2,6 +2,12 @@
 
 #include "Planner.h"
 #include "GameManager.h"
+//#include <bits/stdc++.h>
+
+//void Planner:: add_edge(vector<vector <int>> myboard, int src, int dest){
+  //  adj[src].push_back(dest);
+    
+//}
 
 //currently returning the distance from one position to another
 //expect: return maybe a vector that has the destination + transportation for each move (vector<Travel>) ...
@@ -48,57 +54,101 @@ int Planner:: calculateDistance(board& myboard, int orig, int dest) {
     }
     
     return 0;
+}
+
+bool Planner:: reachDest(int pos, vector<Player>& agents, int playerid){
+    vector<int> mrX = agents[playerid].getMrXloc();
+    for (int i=0; i< mrX.size(); i++) {
+        if (mrX[i] == pos) return true;
+    }
+    return false;
+}
+
+void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int playerid) {
+    
+    vector<int> pred(200);
+    vector <int> dist(200);
+    int dest = 0;
+    
+    if (BFS(agents, playerid, myboard, pred, dist, dest) == false) {
+        cout << "Given source and destination are not connected." << endl;
+        return;
+    }
+    
+    cout << "returned true in BFS" << endl;
+    //vector path
+    vector<int> path;
+    int crawl = dest;
+    path.push_back(crawl);
+    while (pred[crawl]!= -1) {
+        path.push_back(pred[crawl]);
+        crawl = pred[crawl];
+    }
+    
+    //distance from source
+    cout << "Shortest path length is : " << dist[dest];
+    
+    //print path
+    cout << "\n Path is: \n" ;
+    for (int i=path.size()-1; i>=0; i--) {
+        cout << path[i] << " ";
+    }
+    
+    cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << path[1] << endl;
+    //move the detective
+    myboard.setPos(playerid, path[1]);
     
     
 }
 
-void Planner:: moveDetectives(vector<Player>& agents, board &myboard, int playerid) {
+bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, int& dest) {
+    vector<int> mrX = agents[playerid].getMrXloc();
+    //Queue* queue;
+    vector<int> queue;
+    vector<bool> visited;
+    pred.resize(200);
+    dist.resize(200);
+    for (int i =0; i<200; i++) {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+        pred[i] = -1;
+    }
+    int src = myboard.getPos(playerid);
+    //now source is the first to be visited
+    visited[src] = true;
+    dist[src] = 0;
+    queue.push_back(src);
     
-    //first get the vector of all mrX's current possible locations
-    vector <int> mrX = agents[0].getMrXloc();
-    int pos= myboard.getPos(playerid);;
-    string alltrans;
-    
-    vector<int> dsize;
-    dsize.resize(mrX.size());
-    
-    int minpos = 0;
-    //check & get a vector of distances from player's position to mrx's possible location
-    int minsize =200;
-    for (int j=0; j<mrX.size(); j++) {
-        dsize[j] = calculateDistance(myboard, pos, mrX[j]);
-        if (dsize[j] < minsize) {
-            minsize = dsize[j];
-            minpos = j;
+
+    while (reachDest(src, agents, playerid) == false || !queue.empty()) {
+        int nu = queue.front();
+        cout << "first element " << nu << endl;
+        //have to pop front here
+        queue.erase(queue.begin());
+        for (int i=0; i<200; i++) {
+            //
+            if (myboard.at(nu, i)!= "") {
+                if (visited[i]==false) {
+                    visited[i] = true;
+                    dist[i] = dist[nu] + 1;
+                    pred[i] = nu;
+                    queue.push_back(i);
+                    
+                    //we stop BFS when we find destination
+                    if (reachDest(i, agents, playerid)) {
+                        dest = i;
+                        return true;
+                    }
+                }
+            }
+            
         }
     }
+    return false;
     
-    //currently have the minimum distance from one pos to another ... 
-    
-    /*
-    
-    
-    
-        //if movable between
-        //alltrans=myboard.at(pos, mrX[j]);
-        //if (alltrans!=""){
-          //  cout << "movable to " << mrX[j] << " using " << alltrans << endl;
-            //for (int i=0; i<alltrans.size();i++) {
-              //  if (myboard.movable(playerid, mrX[j], alltrans[i], agents)){
-                //    cout << "Player " << myboard.getPlayerName(playerid) << " can move to " << mrX[j]  << endl;
-                  //  break;
-                //}
-            //}
-        //}
-        
-        //else if there is no direct path from detective to Mr.X's possible locations
-        
-        // how to calculate the distance?
-    }
-     
-     */
-    
-    //now we have the shortest possible path from
-    
+}
+
+void Planner:: moveDetectives(vector<Player>& agents, board &myboard, int playerid) {
+    printShortestDistance(myboard, agents, playerid);
     
 }
