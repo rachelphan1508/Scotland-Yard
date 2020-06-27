@@ -96,6 +96,15 @@ void GameManager:: playDetective(int playerid) {
     
     cout << "right before bot" << endl;
     D.moveDetectives(agents, myBoard, playerid);
+    for (int i=0; i< agents.size();i++) {
+        agents[i].updateFromDetective(myBoard, playerid);
+    }
+    
+    //check if game over
+    if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
+        cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
+        gameOver = true;
+    }
     /*
     if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
@@ -119,15 +128,7 @@ void GameManager:: playDetective(int playerid) {
             myBoard.setPos(playerid, dest);
             agents[playerid].decreaseTicket(trans);
         
-        for (int i=0; i< agents.size();i++) {
-            agents[i].updateFromDetective(myBoard, playerid);
-        }
-            
-            //check if game over
-            if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
-                cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
-                gameOver = true;
-            }
+
     }
     else {
             cout << "Detective " << myBoard.getPlayerName(playerid) << "can't move anywhere." << endl;

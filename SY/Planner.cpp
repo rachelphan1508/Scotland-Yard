@@ -94,9 +94,9 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
         cout << path[i] << " ";
     }
     cout << endl;
-    cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << path[1] << endl;
+    cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << path[path.size()-2] << endl;
     //move the detective
-    myboard.setPos(playerid, path[1]);
+    myboard.setPos(playerid, path[path.size()-2] );
     
     
 }
@@ -105,17 +105,17 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
     vector<int> mrX = agents[playerid].getMrXloc();
     //Queue* queue;
     
-    cout << "beginning of bfs" << endl;
+    //cout << "beginning of bfs" << endl;
     vector<int> queue;
     vector<bool> visited;
     visited.resize(200);
-    cout << "1" << endl;
+    //cout << "1" << endl;
     for (int i =0; i<200; i++) {
         visited[i] = false;
         dist[i] = 30;
         pred[i] = -1;
     }
-    cout << "2" << endl;
+    //cout << "2" << endl;
     int src = myboard.getPos(playerid);
     //now source is the first to be visited
     visited[src] = true;
