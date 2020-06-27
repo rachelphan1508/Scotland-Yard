@@ -75,7 +75,7 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
         return;
     }
     
-    cout << "returned true in BFS" << endl;
+    //cout << "returned true in BFS" << endl;
     //vector path
     vector<int> path;
     int crawl = dest;
@@ -86,14 +86,14 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
     }
     
     //distance from source
-    cout << "Shortest path length is : " << dist[dest];
+    cout << "Shortest path length is : " << dist[dest] << endl;
     
     //print path
-    cout << "\n Path is: \n" ;
+    cout << "Path is: \n" ;
     for (int i=path.size()-1; i>=0; i--) {
         cout << path[i] << " ";
     }
-    
+    cout << endl;
     cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << path[1] << endl;
     //move the detective
     myboard.setPos(playerid, path[1]);
@@ -104,25 +104,28 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
 bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, int& dest) {
     vector<int> mrX = agents[playerid].getMrXloc();
     //Queue* queue;
+    
+    cout << "beginning of bfs" << endl;
     vector<int> queue;
     vector<bool> visited;
-    pred.resize(200);
-    dist.resize(200);
+    visited.resize(200);
+    cout << "1" << endl;
     for (int i =0; i<200; i++) {
         visited[i] = false;
-        dist[i] = INT_MAX;
+        dist[i] = 30;
         pred[i] = -1;
     }
+    cout << "2" << endl;
     int src = myboard.getPos(playerid);
     //now source is the first to be visited
     visited[src] = true;
     dist[src] = 0;
     queue.push_back(src);
     
-
+    //cout << "before while loop BFS" << endl;
     while (reachDest(src, agents, playerid) == false || !queue.empty()) {
         int nu = queue.front();
-        cout << "first element " << nu << endl;
+        //cout << "first element " << nu << endl;
         //have to pop front here
         queue.erase(queue.begin());
         for (int i=0; i<200; i++) {

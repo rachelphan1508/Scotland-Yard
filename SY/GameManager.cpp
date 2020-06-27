@@ -270,6 +270,7 @@ void GameManager:: playRound(int& num_round) {
         if (gameOver!=true) {
             for (int i=0; i<5; i++) {
                 playDetective(i);
+                cout << "Playing Dectective " << myBoard.getPlayerName(i) << endl;
                 if (gameOver==true) break;
             }
         }

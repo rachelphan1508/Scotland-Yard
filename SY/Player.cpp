@@ -4,7 +4,10 @@
 
 
 Player:: Player() {
-    mrXlocation.resize(0);
+    mrXlocation.resize(200);
+    for (int i=0; i<200; i++) {
+        mrXlocation[i] = i+1;
+    }
     lastseen =0;
 }
 void Player:: setUg(int val){
@@ -91,6 +94,7 @@ void Player:: updateMrX(char trans, board& myboard) {
     //cout << "trans: " << trans << endl;
     vector<int> v;
     v.resize(0);
+    if (mrXlocation.size() ==200) return;
     for (int i=0; i<mrXlocation.size();i++) {
         //cout << "hereeee" << endl;
         //cout << mrXlocation[i] << endl;
