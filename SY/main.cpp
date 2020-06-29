@@ -21,6 +21,10 @@ int main() {
     << rear(queue) << endl; 
     */
     GameManager g1;
+    string answer;
+    cout << "Play with Computer? (Y/N) " << endl;
+    cin >> answer;
     g1.setUp();
+    if (answer=="Y") g1.setComputer();
     g1.playFullGame();
 }

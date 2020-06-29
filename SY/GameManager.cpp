@@ -11,6 +11,7 @@ void GameManager:: setUp() {
     //set up the board
     myBoard.setUp();
     gameOver = false;
+    computer =false;
     srand(time(0));
     //give each person a random starting position (using 20 because the board is not yet finished)
     int v0 = rand() % 200 + 1;
@@ -68,6 +69,10 @@ void GameManager:: setUp() {
     
 }
 
+void GameManager:: setComputer() {
+    computer = true;
+}
+
 // do the move for each detective
 void GameManager:: playDetective(int playerid) {
     int dest;
@@ -94,7 +99,9 @@ void GameManager:: playDetective(int playerid) {
     
     //here, replace by playing using the bot
     
-    cout << "right before bot" << endl;
+    //cout << "right before bot" << endl;
+    
+    if (computer==true) {
     D.moveDetectives(agents, myBoard, playerid);
     for (int i=0; i< agents.size();i++) {
         agents[i].updateFromDetective(myBoard, playerid);
@@ -105,8 +112,8 @@ void GameManager:: playDetective(int playerid) {
         cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
         gameOver = true;
     }
-    /*
-    if (v.size()!=0) {
+    }
+    else if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
             cout << "Enter your kind of transportation (T,B,U)" << endl;
@@ -127,18 +134,27 @@ void GameManager:: playDetective(int playerid) {
             }
             myBoard.setPos(playerid, dest);
             agents[playerid].decreaseTicket(trans);
+            for (int i=0; i< agents.size();i++) {
+                agents[i].updateFromDetective(myBoard, playerid);
+            }
+     
+            //check if game over
+            if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
+            cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
+            gameOver = true;
+     }
+     
         
 
     }
     else {
             cout << "Detective " << myBoard.getPlayerName(playerid) << "can't move anywhere." << endl;
     }
-    */
     
     
 }
 
-void GameManager:: playMrX(char doubleticket) {
+void GameManager:: playMrX() {
 
     
     int dest;
@@ -218,12 +234,10 @@ void GameManager:: playMrX(char doubleticket) {
 }
 
 //play each round
-void GameManager:: playRound(int& num_round) {
+void GameManager:: playRound(int& num_round, bool& dtused) {
     
     agents[0].Display();
-
-
-    char doubleticket;
+    char doubleticket='N';
     // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
     // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
     
@@ -232,13 +246,14 @@ void GameManager:: playRound(int& num_round) {
     // Mr X's turn
     cout << endl << "It's Mr. X's turn. " << endl;
     //ask if Mr.X wants to use a Double ticket
-    if(MisterX.enoughTicket('D')==true) {
+    if(MisterX.enoughTicket('D')==true && dtused ==false) {
     cout << "Mr.X, do you want to use a Double ticket? (Y/N)" << endl;
     cin >> doubleticket;
     }
     if (doubleticket=='Y' && MisterX.enoughTicket('D')==true) {
         MisterX.decreaseTicket('D');
-        playMrX('Y');
+        dtused =true;
+        playMrX();
         if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
@@ -255,7 +270,8 @@ void GameManager:: playRound(int& num_round) {
     }
     
     else {
-        playMrX('N');
+        dtused = false;
+        playMrX();
         if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
@@ -284,8 +300,9 @@ void GameManager:: playRound(int& num_round) {
 //play the complete game
 void GameManager:: playFullGame() {
     int cur_round =1;
+    bool dtused = false;
     while (cur_round!= 25 || gameOver== false) {
-        playRound(cur_round);
+        playRound(cur_round, dtused);
         cur_round++;
         if (gameOver==true) break;
     }

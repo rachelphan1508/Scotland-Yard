@@ -30,6 +30,7 @@ int Planner:: calculateDistance(board& myboard, int orig, int dest) {
             for (int j=0; j<200; j++) {
                 string at = myboard.at(alldest[i],j);
                 if (at!="") {
+                    
                     if (i==dest) {
                         //found our destination
                         found=true;
@@ -94,8 +95,11 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
         cout << path[i] << " ";
     }
     cout << endl;
-    cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << path[path.size()-2] << endl;
+    int nextdest = path[path.size()-2];
+    //cout << "next dest " << nextdest << endl;
+    cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << nextdest << endl;
     //move the detective
+    agents[playerid].decreaseTicket(myboard.getTicketName(playerid, agents, nextdest));
     myboard.setPos(playerid, path[path.size()-2] );
     
     
@@ -126,24 +130,30 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
     while (reachDest(src, agents, playerid) == false || !queue.empty()) {
         int nu = queue.front();
         //cout << "first element " << nu << endl;
-        //have to pop front here
         queue.erase(queue.begin());
         for (int i=0; i<200; i++) {
-            //
-            if (myboard.at(nu, i)!= "") {
-                if (visited[i]==false) {
-                    visited[i] = true;
-                    dist[i] = dist[nu] + 1;
-                    pred[i] = nu;
-                    queue.push_back(i);
-                    
-                    //we stop BFS when we find destination
-                    if (reachDest(i, agents, playerid)) {
-                        dest = i;
-                        return true;
-                    }
-                }
+            string alltrans = myboard.at(nu, i);
+            //(myboard.movablewalltrans(playerid, i, alltrans, agents)==true)
+            if (alltrans!= "") {
+                //if (myboard.movablewalltrans(playerid, i, alltrans, agents)==true) {
+                        if (visited[i]==false) {
+                            visited[i] = true;
+                            dist[i] = dist[nu] + 1;
+                            pred[i] = nu;
+                            queue.push_back(i);
+                            
+                            //we stop BFS when we find destination
+                            
+                            if (reachDest(i, agents, playerid)) {
+                                cout << "reached destination" << endl;
+                                dest = i;
+                                return true;
+                            }
+                        }
+                //}
+                        
             }
+
             
         }
     }

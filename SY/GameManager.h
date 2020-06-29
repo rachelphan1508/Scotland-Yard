@@ -22,6 +22,7 @@ protected:
     board myBoard;
     bool gameOver;
     Planner D;
+    bool computer;
     
 private:
     int cur_round;
@@ -30,10 +31,11 @@ private:
 public:
     GameManager();
     void setUp(); // give 
-    void playRound(int& num_round); //each player takes turn to move - update the board
+    void playRound(int& num_round, bool& dtused); //each player takes turn to move - update the board
     void playFullGame();
     void playDetective(int playerid);
-    void playMrX(char doubleticket);
+    void playMrX();
+    void setComputer();
     
 };
 

@@ -17,7 +17,10 @@ class board {
 public:
     void setUp();
     bool movable (int playerid, int dest, char trans, vector<Player>& agents);
+    bool movablewalltrans (int playerid, int dest, string alltrans, vector<Player>& agents);
+    
     string at(int row, int col);
+    char getTicketName (int playerid, vector<Player>& agents, int dest);
     
     vector <Travel> possibleMoves (Player myplayer, int playerid, vector<Player>& agents);
     
