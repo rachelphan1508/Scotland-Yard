@@ -97,8 +97,6 @@ void Player:: updateMrX(char trans, board& myboard) {
     v.resize(0);
     if (mrXlocation.size() ==200) return;
     for (int i=0; i<mrXlocation.size();i++) {
-        //cout << "hereeee" << endl;
-        //cout << mrXlocation[i] << endl;
         //go through the board
         for (int j=0; j<200; j++) {
             string at = myboard.at(mrXlocation[i],j);
@@ -121,7 +119,6 @@ void Player:: updateMrX(char trans, board& myboard) {
     //delete all duplicates
     sort(v.begin(), v.end());
     v.erase(unique(v.begin(),v.end()), v.end());
-    //cout << "v size " << v.size() ;
     
     //cout << "possible locations: " << endl;
     //for (int i=0; i<v.size(); i++) {

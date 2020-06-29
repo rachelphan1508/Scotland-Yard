@@ -110,9 +110,12 @@ bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents)
     }
     return false;
 }
-bool board:: movablewalltrans (int playerid, int dest, string alltrans, vector<Player>& agents) {
-    for (int i =0; i <alltrans.size(); i++) {
-        if (movable(playerid, dest, alltrans[i], agents)) return true;
+
+//check if a player can move from src to dest with the tickets he has
+bool board:: movablewalltrans (vector<Player>& agents, int playerid, int src, int dest, string alltrans) {
+    if (destOccupied(dest)) return false;
+    for (int i=0; i< alltrans.size(); i++) {
+        if (agents[playerid].enoughTicket(alltrans[i])) return true;
     }
     return false;
 }
@@ -128,7 +131,6 @@ char board:: getTicketName (int playerid, vector<Player>& agents, int dest) {
     string alltrans = map[positions[playerid]][dest];
     for (int i = 0; i<alltrans.size();i++) {
         if (agents[playerid].enoughTicket(alltrans[i]) == true) {
-            //cout << "yessss" << endl;
             return alltrans[i];
         }
     }

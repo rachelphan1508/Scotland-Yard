@@ -76,7 +76,6 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
         return;
     }
     
-    //cout << "returned true in BFS" << endl;
     //vector path
     vector<int> path;
     int crawl = dest;
@@ -100,9 +99,7 @@ void Planner:: printShortestDistance(board& myboard, vector<Player>& agents, int
     cout << "Player " << myboard.getPlayerName(playerid) << " should move to " << nextdest << endl;
     //move the detective
     agents[playerid].decreaseTicket(myboard.getTicketName(playerid, agents, nextdest));
-    myboard.setPos(playerid, path[path.size()-2] );
-    
-    
+    myboard.setPos(playerid, path[path.size()-2]);
 }
 
 bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, int& dest) {
@@ -129,13 +126,12 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
     //cout << "before while loop BFS" << endl;
     while (reachDest(src, agents, playerid) == false || !queue.empty()) {
         int nu = queue.front();
-        //cout << "first element " << nu << endl;
         queue.erase(queue.begin());
         for (int i=0; i<200; i++) {
             string alltrans = myboard.at(nu, i);
             //(myboard.movablewalltrans(playerid, i, alltrans, agents)==true)
             if (alltrans!= "") {
-                //if (myboard.movablewalltrans(playerid, i, alltrans, agents)==true) {
+                if (myboard.movablewalltrans(agents, playerid, nu, i, alltrans)) {
                         if (visited[i]==false) {
                             visited[i] = true;
                             dist[i] = dist[nu] + 1;
@@ -145,12 +141,12 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
                             //we stop BFS when we find destination
                             
                             if (reachDest(i, agents, playerid)) {
-                                cout << "reached destination" << endl;
+                                //cout << "reached destination" << endl;
                                 dest = i;
                                 return true;
                             }
                         }
-                //}
+                }
                         
             }
 

@@ -155,6 +155,12 @@ void GameManager:: playDetective(int playerid) {
 }
 
 void GameManager:: playMrX() {
+    
+    //PRINT ALL DETECTIVES' LOCATIONS BEFORE MR.X'S MOVE
+    
+    for (int i = 0; i<5; i++) {
+        cout << "Detective " << myBoard.getPlayerName(i) << " is at " << myBoard.getPos(i) << endl;
+    }
 
     
     int dest;
