@@ -1,6 +1,7 @@
 
 #include "Player.h"
 #include "board.h"
+#include <algorithm>
 
 
 Player:: Player() {

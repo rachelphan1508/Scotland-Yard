@@ -2,6 +2,9 @@
 
 #include "Planner.h"
 #include "GameManager.h"
+#include <algorithm>
+
+using namespace std;
 
 
 Planner:: Planner(){
@@ -184,10 +187,10 @@ void Planner:: moveDetectives(vector<Player>& agents, board &myboard, int player
 
 void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
     vector<int> path(0);
-    cout << "ROUND " << round << endl;
+    //cout << "ROUND " << round << endl;
     if (round<3) {
         for (int i=0; i<5; i++) {
-        moveToUnderground(agents, myboard, i);
+            moveToUnderground(agents, myboard, i);
         }
     }
     else if (round >=3)

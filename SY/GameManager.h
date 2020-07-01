@@ -21,7 +21,7 @@ protected:
     MrX MisterX;
     board myBoard;
     bool gameOver;
-    Planner D;
+    Planner myplanner;
     bool computer;
     
 private:
@@ -31,7 +31,7 @@ private:
 public:
     GameManager();
     void setUp(); // give 
-    void playRound(int& num_round, bool& dtused); //each player takes turn to move - update the board
+    void playRound(bool& dtused); //each player takes turn to move - update the board
     void playFullGame();
     void playDetective(int playerid);
     void playDetectiveBot();

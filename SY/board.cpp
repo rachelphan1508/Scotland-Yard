@@ -2,6 +2,7 @@
 #include "board.h"
 #include <fstream>
 
+
 using namespace std;
 
 //initialize the board

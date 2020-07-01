@@ -13,6 +13,7 @@ void GameManager:: setUp() {
     gameOver = false;
     computer =false;
     srand(time(0));
+    cur_round=0;
     //give each person a random starting position (using 20 because the board is not yet finished)
     int v0 = rand() % 200 + 1;
     int v1 = rand() % 200 + 1;
@@ -76,8 +77,8 @@ void GameManager:: setComputer() {
 // do the move for each detective
 
 void GameManager:: playDetectiveBot() {
-    D.setRound(cur_round);
-    D.decideDetectiveMoves(agents, myBoard);
+    myplanner.setRound(cur_round);
+    myplanner.decideDetectiveMoves(agents, myBoard);
         
     for (int i=0; i< agents.size();i++) {
         agents[i].updateFromDetective(myBoard, i);
@@ -245,14 +246,14 @@ void GameManager:: playMrX() {
 }
 
 //play each round
-void GameManager:: playRound(int& num_round, bool& dtused) {
+void GameManager:: playRound(bool& dtused) {
     
     agents[0].Display();
     char doubleticket='N';
     // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
     // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
     
-    cout << endl <<  "We are currently at round " << num_round << endl;
+    cout << endl <<  "We are currently at round " << cur_round << endl;
 
     // Mr X's turn
     cout << endl << "It's Mr. X's turn. " << endl;
@@ -265,7 +266,7 @@ void GameManager:: playRound(int& num_round, bool& dtused) {
         MisterX.decreaseTicket('D');
         dtused =true;
         playMrX();
-        if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
+        if (cur_round == 3 || cur_round==8 || cur_round == 13 ||cur_round == 18 || cur_round == 24) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
                 agents[i].updatelastseen(myBoard.getPos(5), myBoard);
@@ -283,7 +284,7 @@ void GameManager:: playRound(int& num_round, bool& dtused) {
     else {
         dtused = false;
         playMrX();
-        if (num_round == 3 || num_round==8 || num_round == 13 ||num_round == 18 || num_round == 24) {
+        if (cur_round == 3 || cur_round==8 || cur_round == 13 ||cur_round == 18 || cur_round == 24) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
                 agents[i].updatelastseen(myBoard.getPos(5), myBoard);
@@ -313,10 +314,10 @@ void GameManager:: playRound(int& num_round, bool& dtused) {
 
 //play the complete game
 void GameManager:: playFullGame() {
-    int cur_round =1;
+    cur_round =1;
     bool dtused = false;
     while (cur_round!= 25 || gameOver== false) {
-        playRound(cur_round, dtused);
+        playRound(dtused);
         cur_round++;
         if (gameOver==true) break;
     }
