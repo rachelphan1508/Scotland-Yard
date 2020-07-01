@@ -34,6 +34,7 @@ public:
     void playRound(int& num_round, bool& dtused); //each player takes turn to move - update the board
     void playFullGame();
     void playDetective(int playerid);
+    void playDetectiveBot();
     void playMrX();
     void setComputer();
     

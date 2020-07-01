@@ -56,12 +56,14 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
     
     //get all possible moves from that location
     for (int i=0; i<199; i++) {
-        if (map[curpos][i].size() >= 1) {
+        if (map[curpos][i].size() >= 1 && !destOccupied(i)) {
             move.setDest(i);
             for (int j=0; j< map[curpos][i].size(); j++) {
                 if (movable(playerid, i, map[curpos][i][j], agents)) {
                     move.setTrans(map[curpos][i][j]);
-                    res.push_back(move);
+                        res.push_back(move);
+                    
+                    
                 }
             }
         }

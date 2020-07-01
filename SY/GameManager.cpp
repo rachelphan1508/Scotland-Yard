@@ -74,6 +74,22 @@ void GameManager:: setComputer() {
 }
 
 // do the move for each detective
+
+void GameManager:: playDetectiveBot() {
+    D.setRound(cur_round);
+    D.decideDetectiveMoves(agents, myBoard);
+        
+    for (int i=0; i< agents.size();i++) {
+        agents[i].updateFromDetective(myBoard, i);
+        //check if game over
+        if (myBoard.getPos(i) == myBoard.getPos(5)) {
+            cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
+            gameOver = true;
+        }
+    }
+    
+    
+}
 void GameManager:: playDetective(int playerid) {
     int dest;
     char trans;
@@ -101,19 +117,8 @@ void GameManager:: playDetective(int playerid) {
     
     //cout << "right before bot" << endl;
     
-    if (computer==true) {
-    D.moveDetectives(agents, myBoard, playerid);
-    for (int i=0; i< agents.size();i++) {
-        agents[i].updateFromDetective(myBoard, playerid);
-    }
-    
-    //check if game over
-    if (myBoard.getPos(playerid) == myBoard.getPos(5)) {
-        cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
-        gameOver = true;
-    }
-    }
-    else if (v.size()!=0) {
+
+    if (v.size()!=0) {
             cout << "Enter your desired destination: " << endl;
             cin >> dest;
             cout << "Enter your kind of transportation (T,B,U)" << endl;
@@ -291,10 +296,13 @@ void GameManager:: playRound(int& num_round, bool& dtused) {
         }
         //detectives' turn
         if (gameOver!=true) {
-            for (int i=0; i<5; i++) {
-                playDetective(i);
-                cout << "Playing Dectective " << myBoard.getPlayerName(i) << endl;
-                if (gameOver==true) break;
+            if (computer==true) playDetectiveBot();
+            else {
+                for (int i=0; i<5; i++) {
+                    playDetective(i);
+                    cout << "Playing Dectective " << myBoard.getPlayerName(i) << endl;
+                    if (gameOver==true) break;
+                }
             }
         }
     

@@ -103,13 +103,13 @@ void Player:: updateMrX(char trans, board& myboard) {
             //cout << at << endl;
             //cout << "inside" << endl;
             if (at!="") {
-                //cout << "not empty" << endl;
+                //if Mr.X's used a black ticket, he can be at any location that has a connection with his previous location
                 if (trans == 'L') {
                     v.push_back(j);
                 }
+                //if not, only get the locations that has connections with the ticket he used (Bus station for Bus, ... )
                 else for (int k=0; k<at.size(); k++) {
                     if (at[k] == trans) {
-                        //cout << "found" << endl;
                         v.push_back(j);
                     }
                 }
@@ -120,10 +120,6 @@ void Player:: updateMrX(char trans, board& myboard) {
     sort(v.begin(), v.end());
     v.erase(unique(v.begin(),v.end()), v.end());
     
-    //cout << "possible locations: " << endl;
-    //for (int i=0; i<v.size(); i++) {
-      //  cout << v[i] << " ";
-    //}
     
     //replace the previous vector with the new one
     mrXlocation.resize(v.size());
