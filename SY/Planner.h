@@ -21,8 +21,11 @@ public:
     //try to communicate with all detectives
     Planner();
     void setRound(int num);
-    void moveDetectives (vector<Player>& agents, board& myboard, int playerid, vector<int>& path);
-    void printShortestDistance(board& myboard, vector<Player>& agents, int playerid, vector<int>& path, vector<int> locs);
+    int nextShowupRound(int val);
+    
+    void moveDetectives (vector<Player>& agents, board& myboard, int playerid, vector<int>& locs);
+    vector<vector<int>> getPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
+    void printPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
     bool BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, vector<int>& dest, vector<int> locs);
     //calculate the smallest number of tickets it takes to go from one location to another
     int calculateDistance (board& myboard, int orig, int dest);
@@ -32,7 +35,8 @@ public:
     void buildMap(board& myboard, vector<int> adj);
     void add_edge( vector<int>adj[], int src, int dest);
     void decideDetectiveMoves (vector<Player>& agents, board& myboard);
-    void moveToUnderground(vector<Player>& agents, board& myboard, int playerid);
+    void moveToUnderground (vector<Player>& agents, board& myboard, int playerid, vector<vector<int>>& path);
+    
     //void move
 private:
     //vector<int> adj;

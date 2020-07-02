@@ -84,8 +84,9 @@ void GameManager:: playDetectiveBot() {
         agents[i].updateFromDetective(myBoard, i);
         //check if game over
         if (myBoard.getPos(i) == myBoard.getPos(5)) {
-            cout << "GAME OVER! MR.X WAS CAUGHT." << endl;
+            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myBoard.getPlayerName(i) <<"." << endl;
             gameOver = true;
+            break;
         }
     }
     
@@ -98,7 +99,6 @@ void GameManager:: playDetective(int playerid) {
 
     cout << endl << "It's Detective "<<  myBoard.getPlayerName(playerid) << "'s turn. " << endl;
     
-    agents[playerid].Display();
     cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
     
     //print all kind of transportations
@@ -247,8 +247,6 @@ void GameManager:: playMrX() {
 
 //play each round
 void GameManager:: playRound(bool& dtused) {
-    
-    agents[0].Display();
     char doubleticket='N';
     // ORDER: MrX -> Blue -> Red -> Orange -> Green -> Yellow
     // MrX -> 5  --- Blue: 0 --- Red: 1 --- Orange: 2 --- Green: 3 --- Yellow: 4
@@ -297,8 +295,10 @@ void GameManager:: playRound(bool& dtused) {
         }
         //detectives' turn
         if (gameOver!=true) {
+            agents[0].Display();
             if (computer==true) playDetectiveBot();
             else {
+                
                 for (int i=0; i<5; i++) {
                     playDetective(i);
                     cout << "Playing Dectective " << myBoard.getPlayerName(i) << endl;

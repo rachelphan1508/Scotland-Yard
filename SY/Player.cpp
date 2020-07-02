@@ -103,7 +103,7 @@ void Player:: updateMrX(char trans, board& myboard) {
             string at = myboard.at(mrXlocation[i],j);
             //cout << at << endl;
             //cout << "inside" << endl;
-            if (at!="") {
+            if (at!="" && !myboard.destOccupied(j)) {
                 //if Mr.X's used a black ticket, he can be at any location that has a connection with his previous location
                 if (trans == 'L') {
                     v.push_back(j);
@@ -140,7 +140,8 @@ void Player:: updatelastseen(int pos, board& myboard) {
 }
 
 void Player:: Display() {
-    cout << "Mr.X's possible locations now: " << endl;
+    
+    cout << endl << "Mr.X's possible locations now: " << endl;
     for (int i=0; i<mrXlocation.size();i++) {
         cout << mrXlocation[i] << " ";
     }
