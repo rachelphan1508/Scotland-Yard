@@ -230,10 +230,7 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
             //moveDetectives(agents, myboard, i, path);
             path.resize(0);
         }
-        //HAVE TO DECIDE HERE WHICH LOCATION EACH DETECTIVE IS HEADING TO
-        // if mrXloc's size is < 5 => maybe just leave things how it is: trying to get every detective as close
-        // as possible to Mr.X
-        
+        //HAVE TO DECIDE HERE WHICH LOCATION EACH DETECTIVE IS HEADING TOs
         sort(v.begin(), v.end());
         for (int i=0; i<5; i++) {
             vector<int> locs = agents[v[i].second].getMrXloc();
