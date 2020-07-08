@@ -14,36 +14,38 @@ void GameManager:: setUp() {
     computer =false;
     srand(time(0));
     cur_round=0;
+    
+    vector<int> spos = {13, 26, 29, 50, 53, 91, 94,112, 117, 132,138, 155, 174, 197};
     //give each person a random starting position (using 20 because the board is not yet finished)
-    int v0 = rand() % 200 + 1;
-    int v1 = rand() % 200 + 1;
+    int v0 = rand() % 13 + 0;
+    int v1 = rand() % 13 + 0;
     while (v1==v0) {
-        v1 = rand() % 200 + 1;
+        v1 = rand() % 13 + 0;
     }
-    int v2 = rand() % 200 + 1;
+    int v2 = rand() % 13 + 0;
     while (v2==v1 || v2==v0) {
-        v2 = rand() % 200 + 1;
+        v2 = rand() % 13 + 0;
     }
-    int v3 = rand() % 200 + 1;
+    int v3 = rand() % 13 + 0;
     while (v3==v2 || v3==v1 || v3==v0) {
-        v3 = rand() % 200 + 1;
+        v3 = rand() % 13 + 0;
     }
-    int v4 = rand() % 200 + 1;
+    int v4 = rand() % 13 + 0;
     while (v4==v3 || v4==v2 || v4==v1 || v4==v0) {
-        v4 = rand() % 200 + 1;
+        v4 = rand() % 13 + 0;
     }
     
-    int v5 = rand() % 200 + 1;
+    int v5 = rand() % 13 + 0;
     while (v5==v4 || v5==v3 || v5==v2 || v5==v1 || v5==v0) {
-        v5 = rand() % 200 + 1;
+        v5 = rand() % 13 + 0;
     }
     
-    myBoard.setPos(5, v0);
-    myBoard.setPos(0, v1);
-    myBoard.setPos(1, v2);
-    myBoard.setPos(2, v3);
-    myBoard.setPos(3, v4);
-    myBoard.setPos(4, v5);
+    myBoard.setPos(5, spos[v0]);
+    myBoard.setPos(0, spos[v1]);
+    myBoard.setPos(1, spos[v2]);
+    myBoard.setPos(2, spos[v3]);
+    myBoard.setPos(3, spos[v4]);
+    myBoard.setPos(4, spos[v5]);
 
     
     //set the default numbers of tickets for each player
@@ -140,6 +142,7 @@ void GameManager:: playDetective(int playerid) {
             }
             myBoard.setPos(playerid, dest);
             agents[playerid].decreaseTicket(trans);
+            MisterX.increaseTicket(trans);
             for (int i=0; i< agents.size();i++) {
                 agents[i].updateFromDetective(myBoard, playerid);
             }
@@ -255,11 +258,14 @@ void GameManager:: playRound(bool& dtused) {
 
     // Mr X's turn
     cout << endl << "It's Mr. X's turn. " << endl;
+    
     //ask if Mr.X wants to use a Double ticket
     if(MisterX.enoughTicket('D')==true && dtused ==false) {
     cout << "Mr.X, do you want to use a Double ticket? (Y/N)" << endl;
     cin >> doubleticket;
     }
+    
+    //if Mr. X's using a Double ticket
     if (doubleticket=='Y' && MisterX.enoughTicket('D')==true) {
         MisterX.decreaseTicket('D');
         dtused =true;
@@ -273,12 +279,11 @@ void GameManager:: playRound(bool& dtused) {
                 
             }
             cout << "Mr. X is now at " << myBoard.getPos(5) << endl;
-            //here, save Mr.X current location
         }
         //reveal Mr.X's location if in round 3-8-13-18-24
 
     }
-    
+    //if not using a Double ticket
     else {
         dtused = false;
         playMrX();
@@ -286,7 +291,6 @@ void GameManager:: playRound(bool& dtused) {
             //update Mr.X's last seen
             for(int i=0; i<agents.size();i++) {
                 agents[i].updatelastseen(myBoard.getPos(5), myBoard);
-                //cout << "here I update last seen... " << endl;
                 agents[i].Display();
                 
             }

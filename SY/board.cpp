@@ -63,8 +63,6 @@ vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Playe
                 if (movable(playerid, i, map[curpos][i][j], agents)) {
                     move.setTrans(map[curpos][i][j]);
                         res.push_back(move);
-                    
-                    
                 }
             }
         }
@@ -130,8 +128,12 @@ string board:: getPlayerName(int playerid) {
 string board:: at(int row, int col) {
     return map[row][col];
 }
+
+// get the ticket a detective can use to get from his current location to his destination
 char board:: getTicketName (int playerid, vector<Player>& agents, int dest) {
     string alltrans = map[positions[playerid]][dest];
+    //if the destination = 46 & orig = 1 or vice versa, try to use the Bus ticket instead of UG ticket
+    if ( ( (dest == 46 && positions[playerid]==1) || (dest == 1 && positions[playerid]==46) ) && agents[playerid].enoughTicket('B')==true) return 'B';
     for (int i = 0; i<alltrans.size();i++) {
         if (agents[playerid].enoughTicket(alltrans[i]) == true) {
             return alltrans[i];

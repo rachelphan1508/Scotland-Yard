@@ -61,6 +61,12 @@ void Player:: decreaseTicket(char trans) {
     
 }
 
+void Player:: increaseTicket(char trans) {
+    if (trans == 'U') numUg++;
+    else if (trans == 'B') numBus++;
+    else if (trans == 'T') numTaxi++;
+}
+
 
 //check if a player has enough tickets to use
 bool Player:: enoughTicket(char trans) {

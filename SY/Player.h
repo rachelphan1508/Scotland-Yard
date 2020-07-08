@@ -16,6 +16,7 @@ class Player {
 public:
     Player();
     void decreaseTicket (char trans);
+    void increaseTicket (char trans);
     void setTaxi (int val);
     void setBus (int val);
     void setUg (int val);

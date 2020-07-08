@@ -21,9 +21,9 @@ public:
     //try to communicate with all detectives
     Planner();
     void setRound(int num);
-    int nextShowupRound(int val);
+    int nextShowupRound();
     
-    void moveDetectives (vector<Player>& agents, board& myboard, int playerid, vector<int>& locs);
+    int getNextPos (vector<Player>& agents, board& myboard, int playerid, vector<int>& locs);
     vector<vector<int>> getPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
     void printPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
     bool BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, vector<int>& dest, vector<int> locs);
@@ -35,7 +35,10 @@ public:
     void buildMap(board& myboard, vector<int> adj);
     void add_edge( vector<int>adj[], int src, int dest);
     void decideDetectiveMoves (vector<Player>& agents, board& myboard);
-    void moveToUnderground (vector<Player>& agents, board& myboard, int playerid, vector<vector<int>>& path);
+    void moveToUnderground (vector<Player>& agents, board& myboard, int playerid);
+    bool isAtUG (int pos);
+    
+    void sortbyDist(vector< pair<int, int> >& v, vector<int>& target);
     
     //void move
 private:
