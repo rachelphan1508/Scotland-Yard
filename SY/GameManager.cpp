@@ -84,8 +84,9 @@ void GameManager:: playDetectiveBot() {
         
     for (int i=0; i< agents.size();i++) {
         //check if game over
+        
         if (myBoard.getPos(i) == myBoard.getPos(5)) {
-            //cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myBoard.getPlayerName(i) <<"." << endl;
+            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myBoard.getPlayerName(i) <<"." << endl;
             gameOver = true;
             break;
         }

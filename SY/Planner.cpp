@@ -52,7 +52,7 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
     vector<int> dest(0);
     
     if (BFS(agents, playerid, myboard, pred, dist, dest, locs) == false) {
-        cout << "Given source and destination are not connected." << endl;
+        //cout << "Given source and destination are not connected." << endl;
         return path;
     }
     
@@ -83,6 +83,11 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
 
 void Planner:: printPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs) {
     vector< vector<int>> path = getPath(myboard, agents, playerid, locs);
+    if (path.size()==0)
+    {
+        cout << "Detective " << myboard.getPlayerName(playerid) << " can't move anywhere." << endl;
+        return;
+    }
     //distance from source
     cout << endl << "Shortest path length is : " << path[0].size()-1 << endl;
     
@@ -306,10 +311,10 @@ bool Planner:: checkAppeared(vector<int> v, int val) {
     }
     return false;
 }
-//check if there is a similar value before position pos
-bool Planner:: repeated(vector<int> v, int pos) {
+//check if there is a similar value before position pos && path's size is the same
+bool Planner:: repeated(vector<int> v, int pos, board& myboard, vector<Player>& agents, vector<int> locs) {
     for (int i=0; i<pos; i++) {
-        if (v[i] == v[pos]) return true;
+        if (v[i] == v[pos] && getPath(myboard, agents, i, locs)[0].size() == getPath(myboard, agents, pos, locs)[0].size()) return true;
     }
     return false;
 }
@@ -330,6 +335,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     
     vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
     vector<int> station;
+    station.resize(5);
 
     vector< vector<int>> dest;
     //vector to keep track of the number of times each dest appear
@@ -351,7 +357,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     for (int i =0; i<dest.size(); i++)
     {
         //if the detective has only one reachable UG station, do nothing
-        if (dest[i].size()==1) {
+        if (dest[i].size()==1 ) {
             
         }
         else {
@@ -370,7 +376,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     }
     bool found = false;
     bool appeared = false;
-    station.resize(5);
+
     for (int i=0; i< 5;i++)
     {
         //if the station hasn't appeared in the list, add it to the list of stations
@@ -400,7 +406,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     
     //check if there are more than one detective moving to one spot at the one time, make the others move somewhere else
     for (int i =0; i<5; i++) {
-        if (repeated(station, i))
+        if (repeated(station, i, myboard, agents, locs))
         {
             //move the detective to a possible  station (not the chosen stations)
             vector<int> possibledests = exceptStation(locs, station);
@@ -421,11 +427,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         myboard.setPos(i, val);
         agents[i].decreaseTicket(myboard.getTicketName(i, agents, val));
         finalug[0] = 0;
-        //check if game over
-        if (myboard.getPos(i) == myboard.getPos(5)) {
-            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myboard.getPlayerName(i) <<"." << endl;
-            break;
-        }
+        
     }
     
 }
