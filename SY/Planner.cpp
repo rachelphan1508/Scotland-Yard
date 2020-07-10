@@ -183,7 +183,7 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
     else if (round >=3) {
         for (int i=0; i < 5; i++) {
 
-            myboard.printDetails(i, agents);
+            //myboard.printDetails(i, agents);
             
             vector<int> locs = agents[i].getMrXloc();
             
@@ -306,6 +306,25 @@ bool Planner:: checkAppeared(vector<int> v, int val) {
     }
     return false;
 }
+//check if there is a similar value before position pos
+bool Planner:: repeated(vector<int> v, int pos) {
+    for (int i=0; i<pos; i++) {
+        if (v[i] == v[pos]) return true;
+    }
+    return false;
+}
+
+//return a vector that includes everything except similar elements to station
+vector<int> Planner:: exceptStation (vector<int> src, vector<int> station) {
+    vector<int> v;
+    for(int i=0; i< src.size();i++) {
+        if (!checkAppeared(station, src[i]))
+        {
+            v.push_back(src[i]);
+        }
+    }
+    return v;
+}
 
 void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     
@@ -326,17 +345,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         
         
     }
-    /*
-    cout <<"printing dest vector BEFORE " << endl;
-    for (int i=0; i<dest.size(); i++) {
-        for (int j=0;j<dest[i].size();j++) {
-            cout << dest[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-    
-     */
+
     // now we have all UG stations that each detective is trying to get to
     // delete the paths
     for (int i =0; i<dest.size(); i++)
@@ -359,23 +368,11 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
             }
         }
     }
-    /*
-    cout <<"printing dest vector " << endl;
-    for (int i=0; i<dest.size(); i++) {
-        for (int j=0;j<dest[i].size();j++) {
-            cout << dest[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-    
     bool found = false;
     bool appeared = false;
     station.resize(5);
     for (int i=0; i< 5;i++)
     {
-        cout << dest[i][0] << endl;
         //if the station hasn't appeared in the list, add it to the list of stations
         for (int j=0; j<dest[i].size();j++) {
             if (dest[i].size()==1) {
@@ -401,9 +398,14 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         appeared=false;
     }
     
-    //check if there are two detectives moving to one spot at the same time
+    //check if there are more than one detective moving to one spot at the one time, make the others move somewhere else
     for (int i =0; i<5; i++) {
-        
+        if (repeated(station, i))
+        {
+            //move the detective to a possible  station (not the chosen stations)
+            vector<int> possibledests = exceptStation(locs, station);
+            station[i] = getPath(myboard, agents, i, possibledests)[0][0];
+        }
     }
     
     //now, move each detective to its next location
@@ -415,25 +417,9 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         finalug[0]=station[i];
         int val = getNextPos(agents, myboard, i, finalug);
         int curpos = myboard.getPos(i);
-        //if the val is already occupied, move somewhere else (this is not smart ... )
-        if (myboard.destOccupied(val)) {
-            cout << "yes occupied " << endl;
-            for (int j=0; j<200; j++) {
-                if (myboard.at(curpos, j) != "" && agents[i].enoughTicket(myboard.getTicketName(i, agents, j)) && j!=val) {
-                    cout << "j " << j << endl;
-                    val = j;
-                    cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl;
-                    myboard.setPos(i, val);
-                    agents[i].decreaseTicket(myboard.getTicketName(i, agents, val));
-                }
-            }
-        }
-        else
-        {
         cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl;
         myboard.setPos(i, val);
         agents[i].decreaseTicket(myboard.getTicketName(i, agents, val));
-        }
         finalug[0] = 0;
         //check if game over
         if (myboard.getPos(i) == myboard.getPos(5)) {

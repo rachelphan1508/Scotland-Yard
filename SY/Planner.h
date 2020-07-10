@@ -39,9 +39,11 @@ public:
     
     void moveBeforeAppear (vector<Player>& agents, board& myboard);
     bool checkAppeared(vector<int> v, int val);
+    bool repeated (vector<int> v, int pos);
     bool isAtUG (int pos);
     
     void sortbyDist(vector< pair<int, int> >& v, vector<int>& target);
+    vector<int> exceptStation (vector<int> src, vector<int> station);
     
     //void move
 private:
