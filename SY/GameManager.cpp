@@ -83,10 +83,9 @@ void GameManager:: playDetectiveBot() {
     myplanner.decideDetectiveMoves(agents, myBoard);
         
     for (int i=0; i< agents.size();i++) {
-        agents[i].updateFromDetective(myBoard, i);
         //check if game over
         if (myBoard.getPos(i) == myBoard.getPos(5)) {
-            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myBoard.getPlayerName(i) <<"." << endl;
+            //cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myBoard.getPlayerName(i) <<"." << endl;
             gameOver = true;
             break;
         }
@@ -99,15 +98,7 @@ void GameManager:: playDetective(int playerid) {
     char trans;
     bool movable;
 
-    cout << endl << "It's Detective "<<  myBoard.getPlayerName(playerid) << "'s turn. " << endl;
-    
-    cout << "Detective " << myBoard.getPlayerName(playerid) << " is currently at " << myBoard.getPos(playerid) << endl;
-    
-    //print all kind of transportations
-    cout << "Detective " << myBoard.getPlayerName(playerid)  << " has: " << endl;
-    cout << agents[playerid].getBus() << " bus tickets." << endl;
-    cout << agents[playerid].getUg() << " underground tickets." << endl;
-    cout << agents[playerid].getTaxi() << " taxi tickets." << endl;
+    myBoard.printDetails(playerid, agents);
     cout << "All your possible moves: " << endl;
     vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
     //cout << "here" << endl;

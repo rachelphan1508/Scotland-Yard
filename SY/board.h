@@ -21,6 +21,7 @@ public:
     
     string at(int row, int col);
     char getTicketName (int playerid, vector<Player>& agents, int dest);
+    void printDetails(int playerid, vector<Player>& agents);
     
     vector <Travel> possibleMoves (Player myplayer, int playerid, vector<Player>& agents);
     

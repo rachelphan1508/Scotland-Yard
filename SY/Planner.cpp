@@ -172,12 +172,19 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
     path.resize(0);
     //here, each detective only thinks about his next move & make the decision of moving to an UG station or one of Mr.X's possible locations.
     
-    for (int i=0; i < 5; i++) {
+    //for (int i=0; i < 5; i++) {
         //if round < 3, move to an underground station
-        if (round < 3) moveToUnderground(agents, myboard, i);
-        
-        // if round > 3
-        else if (round >=3) {
+    if (round < 3) {
+            
+        //lead the detectives to move to different UG stations at round 3 or after
+        moveBeforeAppear(agents, myboard);
+    }
+    // if round > 3
+    else if (round >=3) {
+        for (int i=0; i < 5; i++) {
+
+            myboard.printDetails(i, agents);
+            
             vector<int> locs = agents[i].getMrXloc();
             
             // if cur round + path.size > next showup round => move to UG station
@@ -195,7 +202,15 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
             else {
                 int nextpos = getNextPos(agents, myboard, i, locs);
                 myboard.setPos(i, nextpos);
+                agents[i].decreaseTicket(myboard.getTicketName(i, agents, nextpos));
                 cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << nextpos << endl;
+                for (int k=0; k<5; k++) {
+                    agents[k].updateFromDetective(myboard, i);
+                }
+                if (myboard.getPos(i) == myboard.getPos(5)) {
+                    cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myboard.getPlayerName(i) <<"." << endl;
+                    break;
+                }
             }
             
         }
@@ -283,4 +298,148 @@ void Planner:: moveToUnderground (vector<Player>& agents, board& myboard, int pl
     agents[playerid].decreaseTicket(myboard.getTicketName(playerid, agents, nextdest));
     myboard.setPos(playerid, nextdest);
     path.resize(0);
+}
+
+bool Planner:: checkAppeared(vector<int> v, int val) {
+    for (int i=0; i<v.size(); i++) {
+        if (v[i] == val) return true;
+    }
+    return false;
+}
+
+void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
+    
+    vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
+    vector<int> station;
+
+    vector< vector<int>> dest;
+    //vector to keep track of the number of times each dest appear
+    vector<int> count (200,0);
+    dest.resize(5);
+    for (int i=0; i<5; i++) {
+        vector< vector<int>> path = getPath(myboard, agents, i, locs);
+        for (int j=0; j<path.size(); j++) {
+            dest[i].push_back(path[j][0]);
+            count[path[j][0]]++;
+        }
+        printPath(myboard, agents, i, locs);
+        
+        
+    }
+    /*
+    cout <<"printing dest vector BEFORE " << endl;
+    for (int i=0; i<dest.size(); i++) {
+        for (int j=0;j<dest[i].size();j++) {
+            cout << dest[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    
+     */
+    // now we have all UG stations that each detective is trying to get to
+    // delete the paths
+    for (int i =0; i<dest.size(); i++)
+    {
+        //if the detective has only one reachable UG station, do nothing
+        if (dest[i].size()==1) {
+            
+        }
+        else {
+            for (int j=0; j< dest[i].size();j++) {
+                //if a station appears only once, keep it and delete the others
+                //cout << "count " << count[dest[i][j]] << endl;
+                if (count[dest[i][j]]==1)
+                {
+                    int val = dest[i][j];
+                    dest[i].resize(0);
+                    dest[i].push_back(val);
+                    break;
+                }
+            }
+        }
+    }
+    /*
+    cout <<"printing dest vector " << endl;
+    for (int i=0; i<dest.size(); i++) {
+        for (int j=0;j<dest[i].size();j++) {
+            cout << dest[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    */
+    
+    bool found = false;
+    bool appeared = false;
+    station.resize(5);
+    for (int i=0; i< 5;i++)
+    {
+        cout << dest[i][0] << endl;
+        //if the station hasn't appeared in the list, add it to the list of stations
+        for (int j=0; j<dest[i].size();j++) {
+            if (dest[i].size()==1) {
+                station[i] = dest[i][0];
+            }
+            else if(found==false) {
+                if (j == dest[i].size()-1)
+                {
+                    station[i] = dest[i][j];
+                }
+                //try to eliminate the dests that appeared
+                else
+                {
+                    if (checkAppeared(station, dest[i][j]) == false) {
+                        found=true;
+                        station[i] = dest[i][j];
+                    }
+                }
+            }
+            
+        }
+        found=false;
+        appeared=false;
+    }
+    
+    //check if there are two detectives moving to one spot at the same time
+    for (int i =0; i<5; i++) {
+        
+    }
+    
+    //now, move each detective to its next location
+    for (int i=0; i<5; i++)
+    {
+
+        //myboard.printDetails(i, agents);
+        vector<int> finalug(1);
+        finalug[0]=station[i];
+        int val = getNextPos(agents, myboard, i, finalug);
+        int curpos = myboard.getPos(i);
+        //if the val is already occupied, move somewhere else (this is not smart ... )
+        if (myboard.destOccupied(val)) {
+            cout << "yes occupied " << endl;
+            for (int j=0; j<200; j++) {
+                if (myboard.at(curpos, j) != "" && agents[i].enoughTicket(myboard.getTicketName(i, agents, j)) && j!=val) {
+                    cout << "j " << j << endl;
+                    val = j;
+                    cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl;
+                    myboard.setPos(i, val);
+                    agents[i].decreaseTicket(myboard.getTicketName(i, agents, val));
+                }
+            }
+        }
+        else
+        {
+        cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl;
+        myboard.setPos(i, val);
+        agents[i].decreaseTicket(myboard.getTicketName(i, agents, val));
+        }
+        finalug[0] = 0;
+        //check if game over
+        if (myboard.getPos(i) == myboard.getPos(5)) {
+            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myboard.getPlayerName(i) <<"." << endl;
+            break;
+        }
+    }
+    
 }
