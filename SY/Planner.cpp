@@ -167,6 +167,7 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
 
 int Planner:: getNextPos(vector<Player>& agents, board &myboard, int playerid, vector<int>& locs) {
     vector<vector<int>> path = getPath(myboard, agents, playerid, locs);
+    printPath(myboard, agents, playerid, locs);
     int nextdest = path[0][path[0].size()-2];
     return nextdest;
     
@@ -189,6 +190,7 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
         for (int i=0; i < 5; i++) {
 
             //myboard.printDetails(i, agents);
+            agents[i].Display();
             
             vector<int> locs = agents[i].getMrXloc();
             
@@ -222,64 +224,6 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
         }
     }
     
-    
-    /*
-    vector< pair<int,int> > v;
-    
-    vector<int> distance(5);
-    //keep track of the target that each detective is trying to get to.
-    vector<int> target(5);
-    
-    //keep track of the next move for each detective
-    vector<int> nextmove(5);
-    
-    //if Mr.X hasn't made a move, try to reach an underground station before Mr.X's turn
-    if (round<3) {
-        for (int i=0; i<5; i++) {
-            moveToUnderground(agents, myboard, i);
-            for (int j=0; j< path.size(); j++) {
-                path[j].resize(0);
-            }
-        }
-    }
-    else if (round >=3)
-    {
-        for (int i=0; i<5; i++) {
-            vector<int> locs = agents[i].getMrXloc();
-            path = getPath(myboard, agents, i, locs);
-            printPath(myboard, agents, i, locs);
-            target[i] = path[0][0];
-            cout << "target " << target[i] << endl;
-            distance[i] = path[0].size();
-            v.push_back(make_pair(distance[i], i));
-            //moveDetectives(agents, myboard, i, path);
-            path.resize(0);
-            
-        }
-        //HAVE TO DECIDE HERE WHICH LOCATION EACH DETECTIVE IS HEADING TOs
-        sortbyDist(v, target);
-        for (int i=0; i<5; i++) {
-            vector<int> locs = agents[v[i].second].getMrXloc();
-            int nextdest = getNextPos(agents, myboard, v[i].second, locs);
-            //if the next detective's aiming to the same dest, remove that dest from the locs vector?
-            if (locs.size() > 1 && i <4 && target[i]==target[i+1]) {
-                //print locs before
-                cout << "before" << endl;
-                for (int k=0; k<locs.size(); k++) {
-                    cout << locs[k] << " ";
-                }
-                cout << endl;
-                //cout << "target[i] " << target[i] << endl;
-                locs.erase(remove(locs.begin(), locs.end(), target[i]), locs.end());
-                //cout << "after" << endl;
-                for (int k=0; k<locs.size(); k++) {
-                    cout << locs[k] << " ";
-                }
-                cout << endl;
-            }
-        }
-    }
-     */
 }
 
 //set the current round
