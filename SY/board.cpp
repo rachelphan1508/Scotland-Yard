@@ -129,9 +129,9 @@ string board:: at(int row, int col) {
     return map[row][col];
 }
 
-// get the ticket a detective can use to get from his current location to his destination
-char board:: getTicketName (int playerid, vector<Player>& agents, int dest) {
-    string alltrans = map[positions[playerid]][dest];
+// get the ticket a detective can use to get from one position to another
+char board:: getTicketName (int src, int playerid, vector<Player>& agents, int dest) {
+    string alltrans = map[src][dest];
     //if the destination = 46 & orig = 1 or vice versa, try to use the Bus ticket instead of UG ticket
     if ( ( (dest == 46 && positions[playerid]==1) || (dest == 1 && positions[playerid]==46) ) && agents[playerid].enoughTicket('B')==true) return 'B';
     for (int i = 0; i<alltrans.size();i++) {

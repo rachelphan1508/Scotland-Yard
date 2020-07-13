@@ -36,6 +36,7 @@ public:
     void add_edge( vector<int>adj[], int src, int dest);
     void decideDetectiveMoves (vector<Player>& agents, board& myboard);
     void moveToUnderground (vector<Player>& agents, board& myboard, int playerid);
+    int getToSomewhere(int playerid, vector<Player>& agents, board& myboard);
     
     void moveBeforeAppear (vector<Player>& agents, board& myboard);
     bool checkAppeared(vector<int> v, int val);

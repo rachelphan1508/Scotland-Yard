@@ -20,7 +20,7 @@ public:
     bool movablewalltrans (vector<Player>& agents, int playerid, int src, int dest, string alltrans);
     
     string at(int row, int col);
-    char getTicketName (int playerid, vector<Player>& agents, int dest);
+    char getTicketName (int src, int playerid, vector<Player>& agents, int dest);
     void printDetails(int playerid, vector<Player>& agents);
     
     vector <Travel> possibleMoves (Player myplayer, int playerid, vector<Player>& agents);
