@@ -3,12 +3,14 @@
 #include "Planner.h"
 #include "GameManager.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
 
 Planner:: Planner(){
     round=0;
+    nextmove.resize(5);
 }
 
 int Planner:: nextShowupRound() {
@@ -19,9 +21,17 @@ int Planner:: nextShowupRound() {
     else return 24;
 }
 
+
 bool Planner:: reachDest(int pos, vector<Player>& agents, int playerid, vector<int> locs){
     for (int i=0; i< locs.size(); i++) {
         if (locs[i] == pos) return true;
+    }
+    return false;
+}
+
+bool Planner:: checkPlanned(int val) {
+    for (int i = 0; i < nextmove.size();i++) {
+        if (val == nextmove[i]) return true;
     }
     return false;
 }
@@ -44,6 +54,7 @@ void Planner:: sortbyDist(vector< pair<int,int> >& v, vector<int>& target) {
         }
     }
 }
+
 
 vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs) {
     vector< vector<int>> path(0);
@@ -71,7 +82,7 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
     //check if the next move's dest is occupied by other detectives
     for (int i =0; i<path.size(); i++) {
         
-        if (myboard.destOccupied(path[i][path[i].size()-2]) && path.size()>1) {
+        if (myboard.destOccupied(path[i][path[i].size()-2]) && path.size()>1 && checkPlanned(path[i][path[i].size()-2] == false)) {
             //if the next move is occupied, delete that path
             path.erase(path.begin() + i);
         }
@@ -79,6 +90,44 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
 
     return path;
 
+}
+
+
+vector<vector<int>> Planner:: getPathAtLength(board& myboard, vector<Player>& agents, int playerid, vector<int> locs, int length) {
+    vector< vector<int>> path(0);
+    vector<int> pred(200);
+    vector <int> dist(200);
+    vector<int> dest(0);
+    
+    if (BFSatlength(agents, playerid, myboard, pred, dist, dest, locs, length) == false) {
+        cout << "BFS couldn't find" << endl;
+        //cout << "Given source and destination are not connected." << endl;
+        return path;
+    }
+    
+    //vector path
+    path.resize(dest.size());
+    for (int i=0; i<dest.size(); i++ ) {
+        
+        int crawl = dest[i];
+        
+        path[i].push_back(crawl);
+        while (pred[crawl]!= -1) {
+            path[i].push_back(pred[crawl]);
+            crawl = pred[crawl];
+        }
+    }
+    //check if the next move's dest is occupied by other detectives
+    for (int i =0; i<path.size(); i++) {
+        
+        if (myboard.destOccupied(path[i][path[i].size()-2]) && path.size()>1) {
+            //if the next move is occupied, delete that path
+            path.erase(path.begin() + i);
+        }
+    }
+    
+    return path;
+    
 }
 
 void Planner:: printPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs) {
@@ -102,10 +151,9 @@ void Planner:: printPath(board& myboard, vector<Player>& agents, int playerid, v
 
 }
 
+
+
 bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, vector<int>& dest, vector<int> locs) {
-    //int curlength = 0;
-    
-    //cout << "beginning of bfs" << endl;
     vector<int> queue;
     vector<bool> visited;
     visited.resize(200);
@@ -116,20 +164,17 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
         pred[i] = -1;
     }
     vector<int> destdis(0);
-    //cout << "2" << endl;
     int src = myboard.getPos(playerid);
     //now source is the first to be visited
     visited[src] = true;
     dist[src] = 0;
     queue.push_back(src);
     
-    //cout << "before while loop BFS" << endl;
     while (!queue.empty()) {
         int nu = queue.front();
         queue.erase(queue.begin());
         for (int i=0; i<200; i++) {
             string alltrans = myboard.at(nu, i);
-            //(myboard.movablewalltrans(playerid, i, alltrans, agents)==true)
             if (alltrans!= "") {
                 if (myboard.movablewalltrans(agents, playerid, nu, i, alltrans)) {
                         if (visited[i]==false) {
@@ -138,17 +183,13 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
                             pred[i] = nu;
                             queue.push_back(i);
                             
-                            //when we find a destination
-                            //cout << "inside movablewalltrans " << endl;
+
                             if (reachDest(i, agents, playerid, locs)) {
-                                //cout << "Reached " << endl;
-                                //if
                                 if (dest.size() > 0 && dist[i] > dist[dest[0]]) {
                                     return true;
                                 }
                                 else {
                                     dest.push_back(i);
-                                    //destdis.push_back(dist[i]);
                                 }
                             }
                         }
@@ -165,6 +206,61 @@ bool Planner:: BFS(vector<Player>& agents, int playerid, board& myboard, vector<
     
 }
 
+//do the BFS to find if there exists a path at a specific length
+bool Planner:: BFSatlength(vector<Player>& agents, int playerid, board& myboard, vector<int>& pred, vector <int>& dist, vector<int>& dest, vector<int> locs, int length) {
+    vector<int> queue;
+    vector<bool> visited;
+    visited.resize(200);
+    
+    for (int i =0; i<200; i++) {
+        visited[i] = false;
+        dist[i] = 30;
+        pred[i] = -1;
+    }
+    vector<int> destdis(0);
+    int src = myboard.getPos(playerid);
+    //now source is the first to be visited
+    visited[src] = true;
+    dist[src] = 0;
+    queue.push_back(src);
+    
+    //cout << "length is " << length << endl;
+    
+    while (!queue.empty()) {
+        int nu = queue.front();
+        queue.erase(queue.begin());
+        for (int i=0; i<200; i++) {
+            string alltrans = myboard.at(nu, i);
+            if (alltrans!= "") {
+                if (myboard.movablewalltrans(agents, playerid, nu, i, alltrans) && visited[i]==false) {
+                        visited[i] = true;
+                        dist[i] = dist[nu] + 1;
+                        pred[i] = nu;
+                        queue.push_back(i);
+                        
+                    //cout << " dist[i] " << dist[i] << endl;
+                        if (reachDest(i, agents, playerid, locs) && dist[i] == length) {
+                            //cout << "found 1 dest " << i << endl;
+                            dest.push_back(i);
+                            return true;
+                            break;
+                        }
+                    
+                    if( dist[i] - length == 2 && dest.size() == 0 ) return false;
+                    
+                }
+                
+            }
+            
+            
+        }
+    }
+    if (dest.size()>0) return true;
+    
+    return false;
+    
+}
+
 int Planner:: getNextPos(vector<Player>& agents, board &myboard, int playerid, vector<int>& locs) {
     vector<vector<int>> path = getPath(myboard, agents, playerid, locs);
     printPath(myboard, agents, playerid, locs);
@@ -173,9 +269,20 @@ int Planner:: getNextPos(vector<Player>& agents, board &myboard, int playerid, v
     
 }
 
-void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
+int Planner:: getNextPosAtLength(vector<Player>& agents, board &myboard, int playerid, vector<int>& locs, int length) {
+    vector<vector<int>> path = getPathAtLength(myboard, agents, playerid, locs, length);
+    if (path.size()==0) return 0;
+   // printPath(myboard, agents, playerid, locs);
+    int nextdest = path[0][path[0].size()-2];
+    cout << "next dest " << nextdest << endl;
+    return nextdest;
+    
+}
+
+void Planner:: moveDetectives (vector<Player>& agents, board& myboard) {
     vector<vector<int>> path;
     path.resize(0);
+    
     //here, each detective only thinks about his next move & make the decision of moving to an UG station or one of Mr.X's possible locations.
     
     //for (int i=0; i < 5; i++) {
@@ -183,45 +290,33 @@ void Planner:: decideDetectiveMoves (vector<Player>& agents, board& myboard) {
     if (round < 3) {
             
         //lead the detectives to move to different UG stations at round 3 or after
-        moveBeforeAppear(agents, myboard);
+         moveBeforeAppear(agents, myboard);
     }
     // if round > 3
     else if (round >=3) {
-        for (int i=0; i < 5; i++) {
-
-            //myboard.printDetails(i, agents);
-            agents[i].Display();
-            
-            vector<int> locs = agents[i].getMrXloc();
-            
-            // if cur round + path.size > next showup round => move to UG station
-            path = getPath(myboard, agents, i, locs);
-            /*
-            cout << "path[0].size " << path[0].size() << endl;
-            cout << "round " << round << endl;
-            cout << "next SU round " << nextShowupRound() << endl;
-             */
-            if (round + path[0].size() - nextShowupRound() > 0 && locs.size()>=5) {
-                moveToUnderground(agents, myboard, i);
-            }
-            
-            //
-            else {
-                int nextpos = getNextPos(agents, myboard, i, locs);
-                myboard.setPos(i, nextpos);
-                int curpos = myboard.getPos(i);
-                agents[i].decreaseTicket(myboard.getTicketName(curpos, i, agents, nextpos));
-                cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << nextpos << endl;
-                for (int k=0; k<5; k++) {
-                    agents[k].updateFromDetective(myboard, i);
-                }
-                if (myboard.getPos(i) == myboard.getPos(5)) {
-                    cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myboard.getPlayerName(i) <<"." << endl;
-                    break;
-                }
-            }
-            
+        moveAfterAppear(agents, myboard);
+    }
+    cout << endl;
+    for (int i=0; i<5; i++) {
+        myboard.DisplayTickets(i, agents);
+        agents[i].Display();
+        int curpos = myboard.getPos(i);
+        int val = nextmove[i];
+        cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl << endl;
+        myboard.setPos(i, val);
+        agents[i].decreaseTicket(myboard.getTicketName(curpos, i, agents, val));
+        for (int k=0; k<5; k++) {
+            agents[k].updateFromDetective(myboard, i);
         }
+        if (myboard.getPos(i) == myboard.getPos(5)) {
+            cout << endl << "GAME OVER! MR.X WAS CAUGHT BY DETECTIVE " << myboard.getPlayerName(i) <<"." << endl;
+            break;
+        }
+    }
+    
+    //reset all next moves
+    for (int i =0; i<nextmove.size(); i++) {
+        nextmove[i] = 0;
     }
     
 }
@@ -241,15 +336,18 @@ void Planner:: moveToUnderground (vector<Player>& agents, board& myboard, int pl
     
     vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
     vector< vector<int>> path = getPath(myboard, agents, playerid, locs);
-    printPath(myboard, agents, playerid, locs);
+    //printPath(myboard, agents, playerid, locs);
     int nextdest = path[0][path[0].size()-2];
-    cout << "Detective " << myboard.getPlayerName(playerid) << " is moving to " << nextdest << endl;
+    cout << endl << "Detective " << myboard.getPlayerName(playerid) << " is moving to " << nextdest << endl;
     //move the detective
     int curpos = myboard.getPos(playerid);
     agents[playerid].decreaseTicket(myboard.getTicketName(curpos, playerid, agents, nextdest));
     myboard.setPos(playerid, nextdest);
     path.resize(0);
 }
+
+
+
 
 bool Planner:: checkAppeared(vector<int> v, int val) {
     for (int i=0; i<v.size(); i++) {
@@ -283,40 +381,35 @@ int Planner:: getToSomewhere(int playerid, vector<Player>& agents, board& myboar
     
     for (int i =0; i<200; i++) {
         if (myboard.at(curpos, i) != "U" && myboard.at(curpos, i) != "" && agents[playerid].enoughTicket(myboard.getTicketName(curpos, playerid, agents, i))==true) {
-            //cout << "myboard.at(curpos,i) " << myboard.at(curpos, i) << endl;
-            //cout << "get to i " << i << endl;
             return i;
         }
     }
     return 0;
 }
 
+
+//all the moves before Mr.X appears (round 1-2)
 void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
     
     //make sure each detective is not using any Underground ticket before round 3
-    
     vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
     vector<int> station;
     vector<bool> UGtarget (5, true);
     station.resize(5);
-    
-    bool UGused = false;
-
     vector< vector<int>> dest;
     //vector to keep track of the number of times each dest appear
     vector<int> count (200,0);
     dest.resize(5);
     for (int i=0; i<5; i++) {
         int curpos = myboard.getPos(i);
-        
         //if currently at at UG station, move somewhere else but not to an UG station
+        // avoid using UG tickets
         if (isAtUG(curpos) == true) {
-            cout << "Detective " << myboard.getPlayerName(i) << " is at an Underground station." << endl;
+            //cout << "Detective " << myboard.getPlayerName(i) << " is at an Underground station." << endl;
             int nextdest = getToSomewhere(i, agents, myboard);
             UGtarget[i] = false;
             station[i] = nextdest;
             dest[i].push_back(nextdest);
-            
         }
         else {
             vector< vector<int>> path = getPath(myboard, agents, i, locs);
@@ -324,10 +417,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
                 dest[i].push_back(path[j][0]);
                 count[path[j][0]]++;
             }
-            printPath(myboard, agents, i, locs);
         }
-        
-        
     }
 
     // now we have all UG stations that each detective is trying to get to
@@ -357,6 +447,7 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
 
     for (int i=0; i< 5;i++)
     {
+
         if (UGtarget[i] == true)
         {
         //if the station hasn't appeared in the list, add it to the list of stations
@@ -384,7 +475,6 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         appeared=false;
         }
     }
-    
     //check if there are more than one detective moving to one spot at the one time, make the others move somewhere else
     for (int i =0; i<5; i++) {
         if (repeated(station, i, myboard, agents, locs) && UGtarget[i] == true)
@@ -395,19 +485,74 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         }
     }
     
-    //now, move each detective to its next location
+    //return the vector of each detective's next location
     for (int i=0; i<5; i++)
     {
-        //myboard.printDetails(i, agents);
         vector<int> finalug(1);
         finalug[0]=station[i];
-        int val = getNextPos(agents, myboard, i, finalug);
-        int curpos = myboard.getPos(i);
-        cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl;
-        myboard.setPos(i, val);
-        agents[i].decreaseTicket(myboard.getTicketName(curpos, i, agents, val));
+        nextmove[i] = getNextPos(agents, myboard, i, finalug);
+        //printPath(myboard, agents, i, finalug);
         finalug[0] = 0;
         
     }
     
+    
+}
+
+
+//decide the moves of each detective after Mr.X appeared
+void Planner:: moveAfterAppear(vector<Player>& agents, board& myboard) {
+    
+    vector<vector<int>> path;
+    int next=0;
+    
+    for (int i=0; i < 5; i++) {
+        
+        char decision = getDecision(agents, myboard, i);
+        vector<int> locs = agents[i].getMrXloc();
+        vector<int> nextlocs = agents[i].getNextRound(myboard);
+        vector<int> UG = {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
+
+        if (decision == 'N')
+        {
+            next = getNextPos(agents, myboard, i, locs);
+        }
+        else if (decision == 'P') next = getNextPos(agents, myboard, i, nextlocs);
+        else next = getNextPos(agents, myboard, i, UG);
+        
+        nextmove[i] = next;
+        for (int k =0; k < 5; k++) {
+            agents[k].updateFromPlanner(myboard, next);
+        }
+        
+    }
+}
+
+//check if a player still has UG ticket after completing his path
+bool Planner:: hasUGticket(vector<vector<int>> path, int playerid) {
+    return true;
+}
+
+char Planner:: getDecision(vector<Player>& agents, board& myboard, int playerid) {
+    vector<int> locs = agents[playerid].getMrXloc();
+    vector<int> nextlocs = agents[playerid].getNextRound(myboard);
+    vector<int> UG = {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
+    
+    int SU = nextShowupRound();
+    vector< vector<int>> pathtoX = getPath(myboard, agents, playerid, locs);
+    vector< vector<int> > pathtoU = getPath(myboard, agents, playerid, UG);
+    //decide here whether a detective is trying to get to one of UG stations | Mr.X's locations | Mr.X's next round locations
+    int roundtilSU = SU - round;
+    if (pathtoX[0].size() < roundtilSU) {
+        return 'N';
+    }
+    /*
+    else if (pathtoU[0].size() - roundtilSU + 1 > 0  && hasUGticket(pathtoU, playerid)==true && checkPlanned(getNextPos(agents, myboard, playerid, UG)== false)  ) {
+        return 'U';
+    }
+     */
+    else return 'P';
+
+    
+    //
 }

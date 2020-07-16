@@ -142,11 +142,9 @@ char board:: getTicketName (int src, int playerid, vector<Player>& agents, int d
     return ' ';
 }
 
-void board:: printDetails(int playerid, vector<Player>& agents) {
-    cout << endl << "It's Detective "<<  getPlayerName(playerid) << "'s turn. " << endl;
+void board:: DisplayTickets(int playerid, vector<Player>& agents) {
     
     cout << "Detective " << getPlayerName(playerid) << " is currently at " << getPos(playerid) << endl;
-    
     //print all kind of transportations
     cout << "Detective " << getPlayerName(playerid)  << " has: " << endl;
     cout << agents[playerid].getBus() << " bus tickets." << endl;

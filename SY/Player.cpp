@@ -5,10 +5,7 @@
 
 
 Player:: Player() {
-    mrXlocation.resize(200);
-    for (int i=0; i<200; i++) {
-        mrXlocation[i] = i+1;
-    }
+    mrXlocation = {13, 26, 29, 50, 53, 91, 94,112, 117, 132, 138, 155, 174, 197};
     lastseen =0;
 }
 void Player:: setUg(int val){
@@ -88,7 +85,6 @@ vector<int> Player:: getMrXloc() {
 //update the vector of Mr.X's locations whenever a detective makes a move
 void Player:: updateFromDetective (board& myboard, int playerid) {
     int pos = myboard.getPos(playerid);
-    if (mrXlocation.size() == 200) return;
     for (int i=0; i< mrXlocation.size(); i++) {
         if (mrXlocation[i] == pos) {
             mrXlocation.erase(mrXlocation.begin()+i);
@@ -97,12 +93,23 @@ void Player:: updateFromDetective (board& myboard, int playerid) {
     }
 }
 
+void Player:: updateFromPlanner(board& myboard, int val) {
+    for (int i=0; i< mrXlocation.size(); i++) {
+        if (mrXlocation[i] == val) {
+            mrXlocation.erase(mrXlocation.begin()+i);
+            break;
+        }
+    }
+}
 void Player:: updateMrX(char trans, board& myboard) {
     //for every of mr X's possible location, update it with the next possible location he can be at with the ticket he just used
     //cout << "trans: " << trans << endl;
     vector<int> v;
     v.resize(0);
-    if (mrXlocation.size() ==200) return;
+    
+    for (int i =0; i<5; i++) {
+        updateFromDetective(myboard, i);
+    }
     for (int i=0; i<mrXlocation.size();i++) {
         //go through the board
         for (int j=0; j<200; j++) {
@@ -134,6 +141,26 @@ void Player:: updateMrX(char trans, board& myboard) {
         mrXlocation[i] = v[i];
     }
     
+    
+}
+
+// return Mr.X's possible locations next round
+vector<int> Player:: getNextRound(board& myboard) {
+    vector<int> v(0);
+    for (int i=0; i<mrXlocation.size();i++) {
+        //go through the board
+        for (int j=0; j<200; j++) {
+            string at = myboard.at(mrXlocation[i],j);
+            if (at!="" && !myboard.destOccupied(j)) {
+                    v.push_back(j);
+
+            }
+        }
+    }
+    //delete all duplicates
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(),v.end()), v.end());
+    return v;
     
 }
 

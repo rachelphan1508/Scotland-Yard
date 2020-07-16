@@ -80,7 +80,7 @@ void GameManager:: setComputer() {
 
 void GameManager:: playDetectiveBot() {
     myplanner.setRound(cur_round);
-    myplanner.decideDetectiveMoves(agents, myBoard);
+    myplanner.moveDetectives(agents, myBoard);
         
     for (int i=0; i< agents.size();i++) {
         //check if game over
@@ -99,7 +99,7 @@ void GameManager:: playDetective(int playerid) {
     char trans;
     bool movable;
 
-    myBoard.printDetails(playerid, agents);
+    myBoard.DisplayTickets(playerid, agents);
     cout << "All your possible moves: " << endl;
     vector<Travel> v = myBoard.possibleMoves(agents[playerid], playerid, agents);
     //cout << "here" << endl;
@@ -172,7 +172,7 @@ void GameManager:: playMrX() {
     //get the destination + means of transportation
     vector<Travel> v = myBoard.possibleMoves(MisterX, 5, agents);
     if (v.size()==0) {
-        cout << "Mr.X can't move anywhere else." << endl;
+        cout << "Mr.X can't move anywhere else. GAME OVER!!!" << endl;
         gameOver = true;
     }
     else {

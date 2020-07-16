@@ -31,9 +31,11 @@ public:
     bool enoughTicket (char trans);
     
     vector<int> getMrXloc();
+    vector<int> getNextRound(board& myboard);
     void updateMrX(char trans, board& myboard);
     void updatelastseen(int pos, board& myboard);
     void updateFromDetective (board& myboard, int playerid);
+    void updateFromPlanner (board& myboard, int val);
     
     void Display();
     
