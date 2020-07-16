@@ -22,6 +22,7 @@ public:
     Planner();
     void setRound(int num);
     int nextShowupRound();
+    bool isSUround();
     
     int getNextPos (vector<Player>& agents, board& myboard, int playerid, vector<int>& locs);
     int getNextPosAtLength(vector<Player>& agents, board &myboard, int playerid, vector<int>& locs, int length);

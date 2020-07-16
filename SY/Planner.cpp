@@ -16,9 +16,14 @@ Planner:: Planner(){
 int Planner:: nextShowupRound() {
     if (round <3) return 3;
     else if (round <8) return 8;
-    else if (round < 13) return 13;
+    else if (round <13) return 13;
     else if (round <18) return 18;
     else return 24;
+}
+
+bool Planner:: isSUround() {
+    if ( round == 3 || round == 8 || round == 13 || round == 18 || round ==24) return true;
+    return false;
 }
 
 
@@ -66,6 +71,7 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
         //cout << "Given source and destination are not connected." << endl;
         return path;
     }
+    int curpos = myboard.getPos(playerid);
     
     //vector path
     path.resize(dest.size());
@@ -82,10 +88,20 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
     //check if the next move's dest is occupied by other detectives
     for (int i =0; i<path.size(); i++) {
         
-        if (myboard.destOccupied(path[i][path[i].size()-2]) && path.size()>1 && checkPlanned(path[i][path[i].size()-2] == false)) {
+        if (myboard.destOccupied(path[i][path[i].size()-2]) && checkPlanned(path[i][path[i].size()-2]) ) {
             //if the next move is occupied, delete that path
             path.erase(path.begin() + i);
         }
+    }
+    
+    // if there is no path, move somewhere else
+    if (path.size()==0) {
+    for(int i = 0; i < 200; i++) {
+        if (myboard.at(curpos, i)!= "" && !checkPlanned(i) && myboard.movablewalltrans(agents, playerid, curpos, i, myboard.at(curpos, i))) {
+            path.resize(1);
+            path[0].push_back(i);
+        }
+    }
     }
 
     return path;
@@ -298,8 +314,10 @@ void Planner:: moveDetectives (vector<Player>& agents, board& myboard) {
     }
     cout << endl;
     for (int i=0; i<5; i++) {
-        myboard.DisplayTickets(i, agents);
         agents[i].Display();
+        cout << endl;
+        myboard.DisplayTickets(i, agents);
+
         int curpos = myboard.getPos(i);
         int val = nextmove[i];
         cout << "Detective " << myboard.getPlayerName(i) << " is moving to " << val << "." << endl << endl;
@@ -543,7 +561,7 @@ char Planner:: getDecision(vector<Player>& agents, board& myboard, int playerid)
     vector< vector<int> > pathtoU = getPath(myboard, agents, playerid, UG);
     //decide here whether a detective is trying to get to one of UG stations | Mr.X's locations | Mr.X's next round locations
     int roundtilSU = SU - round;
-    if (pathtoX[0].size() < roundtilSU) {
+    if (pathtoX[0].size() < roundtilSU || isSUround() || locs.size()<5) {
         return 'N';
     }
     /*
