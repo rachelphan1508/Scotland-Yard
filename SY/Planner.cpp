@@ -88,7 +88,7 @@ vector<vector<int>> Planner:: getPath(board& myboard, vector<Player>& agents, in
     //check if the next move's dest is occupied by other detectives
     for (int i =0; i<path.size(); i++) {
         
-        if (myboard.destOccupied(path[i][path[i].size()-2]) && checkPlanned(path[i][path[i].size()-2]) ) {
+        if (myboard.destOccupied(path[i][path[i].size()-2]) || checkPlanned(path[i][path[i].size()-2]) ) {
             //if the next move is occupied, delete that path
             path.erase(path.begin() + i);
         }
@@ -405,51 +405,21 @@ int Planner:: getToSomewhere(int playerid, vector<Player>& agents, board& myboar
     return 0;
 }
 
-
-//all the moves before Mr.X appears (round 1-2)
-void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
+// takes a vector of all destinations each detective is trying to get to & makes each detective goes to one place
+void Planner:: deleteSameGoal(vector<int>& station, vector <vector<int>> dest, vector<Player>& agents, board& myboard, vector<int>& count, vector<char>& target) {
     
-    //make sure each detective is not using any Underground ticket before round 3
-    vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
-    vector<int> station;
-    vector<bool> UGtarget (5, true);
-    station.resize(5);
-    vector< vector<int>> dest;
-    //vector to keep track of the number of times each dest appear
-    vector<int> count (200,0);
-    dest.resize(5);
-    for (int i=0; i<5; i++) {
-        int curpos = myboard.getPos(i);
-        //if currently at at UG station, move somewhere else but not to an UG station
-        // avoid using UG tickets
-        if (isAtUG(curpos) == true) {
-            //cout << "Detective " << myboard.getPlayerName(i) << " is at an Underground station." << endl;
-            int nextdest = getToSomewhere(i, agents, myboard);
-            UGtarget[i] = false;
-            station[i] = nextdest;
-            dest[i].push_back(nextdest);
-        }
-        else {
-            vector< vector<int>> path = getPath(myboard, agents, i, locs);
-            for (int j=0; j<path.size(); j++) {
-                dest[i].push_back(path[j][0]);
-                count[path[j][0]]++;
-            }
-        }
-    }
 
-    // now we have all UG stations that each detective is trying to get to
+    
     // delete the paths
     for (int i =0; i<dest.size(); i++)
     {
-        //if the detective has only one reachable UG station, do nothing
+        //if the detective has only one reachable destination, do nothing
         if (dest[i].size()==1 ) {
             
         }
         else {
             for (int j=0; j< dest[i].size();j++) {
-                //if a station appears only once, keep it and delete the others
-                //cout << "count " << count[dest[i][j]] << endl;
+                //if a station appears only once, keep it and delete the others (of the same detective)
                 if (count[dest[i][j]]==1)
                 {
                     int val = dest[i][j];
@@ -460,46 +430,62 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
             }
         }
     }
+    
     bool found = false;
     bool appeared = false;
-
+    
     for (int i=0; i< 5;i++)
     {
-
-        if (UGtarget[i] == true)
+        
+        if (target[i] != 'N')
         {
-        //if the station hasn't appeared in the list, add it to the list of stations
-        for (int j=0; j<dest[i].size();j++) {
-            if (dest[i].size()==1) {
-                station[i] = dest[i][0];
-            }
-            else if(found==false) {
-                if (j == dest[i].size()-1)
-                {
-                    station[i] = dest[i][j];
+            //if the station hasn't appeared in the list, add it to the list of stations
+            for (int j=0; j<dest[i].size();j++) {
+                if (dest[i].size()==1) {
+                    station[i] = dest[i][0];
                 }
-                //try to eliminate the dests that appeared
-                else
-                {
-                    if (checkAppeared(station, dest[i][j]) == false) {
-                        found=true;
+                else if(found==false) {
+                    if (j == dest[i].size()-1)
+                    {
                         station[i] = dest[i][j];
                     }
+                    //try to choose the dests that has not appeared
+                    else
+                    {
+                        if (checkAppeared(station, dest[i][j]) == false) {
+                            found=true;
+                            station[i] = dest[i][j];
+                        }
+                    }
                 }
+                
             }
-            
-        }
-        found=false;
-        appeared=false;
+            found=false;
+            appeared=false;
         }
     }
     //check if there are more than one detective moving to one spot at the one time, make the others move somewhere else
     for (int i =0; i<5; i++) {
-        if (repeated(station, i, myboard, agents, locs) && UGtarget[i] == true)
+        vector<int> locs = agents[i].getMrXloc();
+        vector<int> nextlocs = agents[i].getNextRound(myboard);
+        vector<int> UG = {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
+        if (repeated(station, i, myboard, agents, locs))
         {
+            vector<int> possibledests;
             //move the detective to a possible  station (not the chosen stations)
-            vector<int> possibledests = exceptStation(locs, station);
-            station[i] = getPath(myboard, agents, i, possibledests)[0][0];
+            if (target[i] == 'U') {
+                 possibledests = exceptStation(UG, station);
+                station[i] = getPath(myboard, agents, i, possibledests)[0][0];
+            }
+            if (target[i] == 'N' & locs.size() > 2) {
+                possibledests = exceptStation(locs, station);
+                station[i] = getPath(myboard, agents, i, possibledests)[0][0];
+            }
+            if (target[i] == 'P') {
+                possibledests = exceptStation(nextlocs, station);
+                station[i] = getPath(myboard, agents, i, possibledests)[0][0];
+            }
+            
         }
     }
     
@@ -514,6 +500,46 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
         
     }
     
+    for (int k =0; k < 5; k++) {
+        agents[k].updateFromPlanner(myboard, nextmove[k]);
+    }
+}
+
+//all the moves before Mr.X appears (round 1-2)
+void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
+    
+    //make sure each detective is not using any Underground ticket before round 3
+    vector<int> locs {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
+    vector<int> station;
+    vector<char> target (5, 'U');
+    station.resize(5);
+    vector< vector<int>> dest;
+    //vector to keep track of the number of times each dest appear
+    vector<int> count (200,0);
+    dest.resize(5);
+    for (int i=0; i<5; i++) {
+        int curpos = myboard.getPos(i);
+        //if currently at at UG station, move somewhere else but not to an UG station
+        // avoid using UG tickets
+        if (isAtUG(curpos) == true) {
+            //cout << "Detective " << myboard.getPlayerName(i) << " is at an Underground station." << endl;
+            int nextdest = getToSomewhere(i, agents, myboard);
+            target[i] = 'N';
+            station[i] = nextdest;
+            dest[i].push_back(nextdest);
+        }
+        else {
+            vector< vector<int>> path = getPath(myboard, agents, i, locs);
+            for (int j=0; j<path.size(); j++) {
+                dest[i].push_back(path[j][0]);
+                count[path[j][0]]++;
+            }
+        }
+    }
+    
+    deleteSameGoal(station, dest, agents, myboard, count, target);
+
+    
     
 }
 
@@ -522,28 +548,56 @@ void Planner:: moveBeforeAppear (vector<Player>& agents, board& myboard) {
 void Planner:: moveAfterAppear(vector<Player>& agents, board& myboard) {
     
     vector<vector<int>> path;
+    //keep track of each detective's final destination
+    vector<int> station (5,0);
     int next=0;
+    
+    //KEEP TRACK of each detective's destination
+    vector< vector<int>> dest;
+    dest.resize(5);
+    
+    //vector to keep track of the number of times each dest appear
+    vector<int> count (200,0);
+    
+    //keep track of the direction each detective is moving (X - to Mr.X; P - Prediction for next round; U - UG )
+    vector<char> target(5);
+    
     
     for (int i=0; i < 5; i++) {
         
-        char decision = getDecision(agents, myboard, i);
+        target[i] = getDecision(agents, myboard, i);
         vector<int> locs = agents[i].getMrXloc();
         vector<int> nextlocs = agents[i].getNextRound(myboard);
         vector<int> UG = {13, 46, 67, 74, 79, 89, 111, 140, 153, 159, 163, 185};
 
-        if (decision == 'N')
+        if (target[i] == 'X')
         {
-            next = getNextPos(agents, myboard, i, locs);
+            //next = getNextPos(agents, myboard, i, locs);
+            
+            path = getPath(myboard, agents, i, locs);
+            for (int j=0; j<path.size(); j++) {
+                dest[i].push_back(path[j][0]);
+                count[path[j][0]]++;
+            }
         }
-        else if (decision == 'P') next = getNextPos(agents, myboard, i, nextlocs);
-        else next = getNextPos(agents, myboard, i, UG);
-        
-        nextmove[i] = next;
-        for (int k =0; k < 5; k++) {
-            agents[k].updateFromPlanner(myboard, next);
+        else if (target[i] == 'P') {
+            //next = getNextPos(agents, myboard, i, nextlocs);
+            path = getPath(myboard, agents, i, nextlocs);
+            for (int j=0; j<path.size(); j++) {
+                dest[i].push_back(path[j][0]);
+                count[path[j][0]]++;
+            }
         }
-        
+        else {
+            //next = getNextPos(agents, myboard, i, UG);
+            path = getPath(myboard, agents, i, UG);
+            for (int j=0; j<path.size(); j++) {
+                dest[i].push_back(path[j][0]);
+                count[path[j][0]]++;
+            }
+        }
     }
+    deleteSameGoal(station, dest, agents, myboard, count, target);
 }
 
 //check if a player still has UG ticket after completing his path
@@ -562,7 +616,7 @@ char Planner:: getDecision(vector<Player>& agents, board& myboard, int playerid)
     //decide here whether a detective is trying to get to one of UG stations | Mr.X's locations | Mr.X's next round locations
     int roundtilSU = SU - round;
     if (pathtoX[0].size() < roundtilSU || isSUround() || locs.size()<5) {
-        return 'N';
+        return 'X';
     }
     /*
     else if (pathtoU[0].size() - roundtilSU + 1 > 0  && hasUGticket(pathtoU, playerid)==true && checkPlanned(getNextPos(agents, myboard, playerid, UG)== false)  ) {

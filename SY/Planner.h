@@ -30,6 +30,8 @@ public:
     vector<vector<int>> getPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
     vector<vector<int>> getPathAtLength(board& myboard, vector<Player>& agents, int playerid, vector<int> locs, int length);
     
+    void deleteSameGoal(vector<int>& station, vector<vector<int>> dest, vector<Player>& agents, board& myboard, vector<int>& count, vector<char>& target);
+    
     
     void printPath(board& myboard, vector<Player>& agents, int playerid, vector<int> locs);
     
