@@ -14,6 +14,7 @@
 using namespace std;
 
 
+//class GameManager manages the game (holds detectives, Mr.X, the map and the planner
 class GameManager {
 protected:
     vector <Player> agents;
@@ -26,7 +27,6 @@ protected:
     
 private:
     int cur_round;
-    //vector<string> records; //record Mr.X's move
     
 public:
     GameManager();

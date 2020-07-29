@@ -13,6 +13,7 @@
 
 using namespace std;
 
+//class Board holds the map and each detective's names and positions 
 class board {
 public:
     void setUp();
@@ -22,6 +23,7 @@ public:
     string at(int row, int col);
     char getTicketName (int src, int playerid, vector<Player>& agents, int dest);
     void DisplayTickets(int playerid, vector<Player>& agents);
+    void displayPlayerPos();
     
     vector <Travel> possibleMoves (Player myplayer, int playerid, vector<Player>& agents);
     
@@ -32,9 +34,7 @@ public:
     string getPlayerName(int playerid);
     
     int getDistance (int orig, int dest);
-    
-    //vector<int> getAllDest(
-    
+\
 
 private:
     vector<vector<string>> map;

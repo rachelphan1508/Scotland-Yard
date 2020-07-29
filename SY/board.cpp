@@ -23,16 +23,14 @@ void board:: setUp() {
     for (int i=0; i< map.size();i++) {
         map[i].resize(200);
     }
-    
     //set up with a map of empty string
     for (int i=0; i<200; i++) {
         for (int j=0; j<200; j++) {
             map[i][j] = "";
         }
     }
-    
     //fill up the map with transportation
-    // B = Bus, T = Taxi, U = Underground, R = Boat (River)
+    // B = Bus, T = Taxi, U = Underground, L = Boat (similar to a Black ticket)
     int a, b;
     string c;
     ifstream infile;
@@ -49,6 +47,7 @@ void board:: setUp() {
 
 }
 
+//return a vector of possible moves for a player
 vector<Travel> board:: possibleMoves(Player myplayer, int playerid, vector<Player>& agents) {
     //get current location
     int curpos = positions[playerid];
@@ -88,7 +87,8 @@ bool board:: destOccupied(int dest) {
     }
     return false;
 }
-//check if the move is legal
+
+//check if a move is legal
 bool board:: movable(int playerid, int dest, char trans, vector<Player>& agents) {
     int curpos = positions[playerid];
     //if there is no available kind of transportation -> return false
@@ -121,10 +121,12 @@ bool board:: movablewalltrans (vector<Player>& agents, int playerid, int src, in
     return false;
 }
 
+//get a player's name based on playerid
 string board:: getPlayerName(int playerid) {
     return playernames[playerid];
 }
 
+//return the relationship of 2 positions on the map (can be an empty string or a transportation
 string board:: at(int row, int col) {
     return map[row][col];
 }
@@ -142,6 +144,7 @@ char board:: getTicketName (int src, int playerid, vector<Player>& agents, int d
     return ' ';
 }
 
+//display each player's current number of tickets
 void board:: DisplayTickets(int playerid, vector<Player>& agents) {
     
 
@@ -151,4 +154,12 @@ void board:: DisplayTickets(int playerid, vector<Player>& agents) {
     cout << agents[playerid].getUg() << " underground tickets." << endl;
     cout << agents[playerid].getTaxi() << " taxi tickets." << endl;
     cout << "Detective " << getPlayerName(playerid) << " is currently at " << getPos(playerid) << endl;
+}
+
+//display each detective's current location
+void board:: displayPlayerPos() {
+    for (int i =0; i<5; i++) {
+        cout << "Detective " <<getPlayerName(i) << " is at " << getPos(i) << "." << endl;
+    }
+    cout << endl;
 }

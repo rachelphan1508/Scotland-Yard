@@ -4,46 +4,69 @@
 #include <algorithm>
 
 
+
+// initialize Player class that holds a player's number of tickets, Mr.X's last seen location & Mr.X's all possible locations
 Player:: Player() {
     mrXlocation = {13, 26, 29, 50, 53, 91, 94,112, 117, 132, 138, 155, 174, 197};
     lastseen =0;
+    numTaxi = 0 ;
+    numBus = 0;
+    numUg = 0;
+    numBlack = 0;
+    numDouble = 0;
 }
+
+//set the number of Underground ticket
 void Player:: setUg(int val){
     numUg = val;
 }
 
+
+//set the number of Bus tickets
 void Player:: setBus(int val) {
     numBus = val;
 }
 
+
+//set the number of Taxi tickets
 void Player:: setTaxi(int val) {
     numTaxi = val;
 }
 
-
+//set the number of Black tickets
 void Player:: setBlack(int val) {
     numBlack = val;
 }
 
+
+//set the number of Double tickets
 void Player:: setDouble(int val) {
     numDouble = val;
 }
 
 
 
-
+//get the number of UG tickets
 int Player:: getUg() {
     return numUg;
 }
+
+//get the number of Bus tickets
 int Player:: getBus() {
     return numBus;
 }
+
+//get the number of Tazi tickets
 int Player:: getTaxi() {
     return numTaxi;
 }
+
+//get the number of Double tickets
 int Player:: getDouble() {
     return numDouble;
 }
+
+//get the number of Black tickets
 int Player:: getBlack() {
     return numBlack;
 }
@@ -58,6 +81,7 @@ void Player:: decreaseTicket(char trans) {
     
 }
 
+//increase the number of tickets (used for Mr.X)
 void Player:: increaseTicket(char trans) {
     if (trans == 'U') numUg++;
     else if (trans == 'B') numBus++;
@@ -77,6 +101,7 @@ bool Player:: enoughTicket(char trans) {
     else return true;
 }
 
+//get all Mr.X's possible locations
 vector<int> Player:: getMrXloc() {
     return mrXlocation;
     
@@ -93,6 +118,7 @@ void Player:: updateFromDetective (board& myboard, int playerid) {
     }
 }
 
+// update Mr.X's locations based on each detective's planned move
 void Player:: updateFromPlanner(board& myboard, int val) {
     for (int i=0; i< mrXlocation.size(); i++) {
         if (mrXlocation[i] == val) {
@@ -101,9 +127,9 @@ void Player:: updateFromPlanner(board& myboard, int val) {
         }
     }
 }
+
+//update Mr.X's locations after each round based on his previous possible locations and the ticket he used
 void Player:: updateMrX(char trans, board& myboard) {
-    //for every of mr X's possible location, update it with the next possible location he can be at with the ticket he just used
-    //cout << "trans: " << trans << endl;
     vector<int> v;
     v.resize(0);
     
@@ -114,8 +140,6 @@ void Player:: updateMrX(char trans, board& myboard) {
         //go through the board
         for (int j=0; j<200; j++) {
             string at = myboard.at(mrXlocation[i],j);
-            //cout << at << endl;
-            //cout << "inside" << endl;
             if (at!="" && !myboard.destOccupied(j)) {
                 //if Mr.X's used a black ticket, he can be at any location that has a connection with his previous location
                 if (trans == 'L') {
@@ -140,8 +164,6 @@ void Player:: updateMrX(char trans, board& myboard) {
     for (int i=0; i<v.size(); i++) {
         mrXlocation[i] = v[i];
     }
-    
-    
 }
 
 // return Mr.X's possible locations next round
@@ -164,6 +186,7 @@ vector<int> Player:: getNextRound(board& myboard) {
     
 }
 
+//update Mr.X's possible locations when his location is revealed
 void Player:: updatelastseen(int pos, board& myboard) {
     lastseen = pos;
     //here, update all Mr.X's possible locations
@@ -172,9 +195,10 @@ void Player:: updatelastseen(int pos, board& myboard) {
     mrXlocation[0] = pos;
 }
 
+//Display Mr.X's current possible locations
 void Player:: Display() {
     
-    cout << endl << "Mr.X's possible locations now: " << endl;
+    cout << endl << "All Mr.X's possible locations now: " << endl;
     for (int i=0; i<mrXlocation.size();i++) {
         cout << mrXlocation[i] << " ";
     }

@@ -1,10 +1,3 @@
-//
-//  Travel.cpp
-//  SY
-//
-//  Created by Rachel Phan on 5/27/20.
-//  Copyright © 2020 Rachel Phan. All rights reserved.
-//
 
 #include "Travel.h"
 

@@ -1,4 +1,6 @@
 
+
+
 #ifndef Player_h
 #define Player_h
 
@@ -11,6 +13,8 @@ using namespace std;
 
 class board;
 
+//Class: Player
+//A player holds his number of tickets, Mr.X's last seen location, and Mr.X's possible locations
 class Player {
     
 public:
